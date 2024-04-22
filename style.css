@@ -1,0 +1,93 @@
+body {
+    font-family: Georgia, serif;
+}
+
+.site-header{
+    /* background-color: #333; */
+    text-align: center;
+    padding: 50px 0;
+}
+
+.site-header h1 {
+    margin: 0.5rem 0;
+    display: inline-block;
+    font-size: 22px;
+}
+
+.site-nav ul {
+    justify-content: center;
+    display: flex; /* Use flexbox for horizontal alignment */
+    flex-wrap: wrap; /* Wrap items to the next line if necessary */
+}
+
+.site-nav ul li {
+    display: inline;
+    margin-right: 20px;
+
+}
+
+.site-nav ul li a {
+    color: #e91717;
+
+}
+
+.ccs-logo {
+    height: 100px;
+    display: block;
+    margin: 0 auto; /* Center the logo inside the header */
+}
+
+
+.main-content {
+    max-width: 1000px; /* Adjust to desired width */
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+    font-size: 18px;
+  }
+  
+  .section-title {
+    font-size: 1.5rem; /* Adjust title font size as needed */
+    margin-bottom: 1rem; /* Space below each section title */
+  }
+  
+  .section-content {
+    margin-bottom: 2rem; /* Space below each section's content */
+    /* padding: 15px; */
+    font-size: 18px;
+  }
+  
+
+
+
+ul.topnav {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background-color: #e2e2e2;
+    overflow: hidden;
+    position: fixed; /* Fixed position */
+    top: 0; /* Stick it to the top */
+    width: 100%; /* Full width */
+    z-index: 1000; /* Make sure it sits on top */
+}
+
+ul.topnav li {float: left;}
+
+ul.topnav li a {
+    display: block;
+    color: rgb(0, 0, 0);
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+ul.topnav li a:hover:not(.active) {background-color: #bbb9b9;}
+
+
+ul.topnav li.right {float: right;}
+
+@media screen and (max-width: 600px){
+    ul.topnav li.right, 
+    ul.topnav li {float: none;}
+}
