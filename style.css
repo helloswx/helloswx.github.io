@@ -4,13 +4,16 @@ body {
 }
 
 section {
-    padding-top: 60px; /* Height of your fixed header */
-    margin-top: -60px; /* Negative value of the padding to align the section correctly */
-    scroll-margin-top: 60px; /* Same height as your fixed header */
+    padding-top: 60px;
+    /* Height of your fixed header */
+    margin-top: -60px;
+    /* Negative value of the padding to align the section correctly */
+    scroll-margin-top: 60px;
+    /* Same height as your fixed header */
 }
 
 
-.site-header{
+.site-header {
     /* background-color: #333; */
     text-align: center;
     padding: 50px 0;
@@ -24,8 +27,10 @@ section {
 
 .site-nav ul {
     justify-content: center;
-    display: flex; /* Use flexbox for horizontal alignment */
-    flex-wrap: wrap; /* Wrap items to the next line if necessary */
+    display: flex;
+    /* Use flexbox for horizontal alignment */
+    flex-wrap: wrap;
+    /* Wrap items to the next line if necessary */
     font-size: 22px;
 }
 
@@ -38,56 +43,68 @@ section {
 .site-nav ul li a {
     font-weight: bold;
     color: #a51417;
-    
+
 }
 
 .ccs-logo {
     height: 130px;
     display: block;
-    margin: 0 auto; /* Center the logo inside the header */
+    margin: 0 auto;
+    /* Center the logo inside the header */
 }
 
 
 .main-content {
-    max-width: 1200px; /* Adjust to desired width */
+    max-width: 1200px;
+    /* Adjust to desired width */
     margin-left: auto;
     margin-right: auto;
     text-align: left;
     font-size: 16px;
-  }
-  
-  .section-title {
-    font-size: 1.5rem; /* Adjust title font size as needed */
-    margin-bottom: 1rem; /* Space below each section title */
-  }
-  
-  .section-content{
-    margin-bottom: 2rem; /* Space below each section's content */
+}
+
+.section-title {
+    font-size: 1.5rem;
+    /* Adjust title font size as needed */
+    margin-bottom: 1rem;
+    /* Space below each section title */
+}
+
+.section-content {
+    margin-bottom: 2rem;
+    /* Space below each section's content */
     /* padding: 15px; */
     font-size: 16px;
-  }
-  
+}
+
 /* Add this to your CSS file */
 .to-top {
     position: fixed;
-    bottom: 20px; /* You can adjust this value */
-    right: 20px; /* You can adjust this value */
-    background-color: black; /* Your desired background color */
-    color: white; /* Your desired text color */
+    bottom: 20px;
+    /* You can adjust this value */
+    right: 20px;
+    /* You can adjust this value */
+    background-color: black;
+    /* Your desired background color */
+    color: white;
+    /* Your desired text color */
     padding: 10px;
     border-radius: 5px;
     cursor: pointer;
 }
-  
+
 .to-top a {
-    color: white; /* Ensure the link is white */
-    text-decoration: none; /* No underline */
-  }
-  
+    color: white;
+    /* Ensure the link is white */
+    text-decoration: none;
+    /* No underline */
+}
+
 /* Add a hover effect if desired */
 .to-top:hover {
-    background-color: #444; /* Darken the button a bit */
-  }
+    background-color: #444;
+    /* Darken the button a bit */
+}
 
 
 ul.topnav {
@@ -96,13 +113,19 @@ ul.topnav {
     padding: 0;
     background-color: #e2e2e2;
     overflow: hidden;
-    position: fixed; /* Fixed position */
-    top: 0; /* Stick it to the top */
-    width: 100%; /* Full width */
-    z-index: 1000; /* Make sure it sits on top */
+    position: fixed;
+    /* Fixed position */
+    top: 0;
+    /* Stick it to the top */
+    width: 100%;
+    /* Full width */
+    z-index: 1000;
+    /* Make sure it sits on top */
 }
 
-ul.topnav li {float: left;}
+ul.topnav li {
+    float: left;
+}
 
 ul.topnav li a {
     display: block;
@@ -112,16 +135,19 @@ ul.topnav li a {
     text-decoration: none;
 }
 
-ul.topnav li a:hover:not(.active) {background-color: #bbb9b9;}
-
-
-ul.topnav li.right {float: right;}
-
-@media screen and (max-width: 600px){
-    ul.topnav li.right, 
-    ul.topnav li {float: none;}
+ul.topnav li a:hover:not(.active) {
+    background-color: #bbb9b9;
 }
 
 
+ul.topnav li.right {
+    float: right;
+}
 
-  
+@media screen and (max-width: 600px) {
+
+    ul.topnav li.right,
+    ul.topnav li {
+        float: none;
+    }
+}
