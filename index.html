@@ -1,187 +1,399 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>11th ACM Workshop on Adaptive and Autonomous Cyber Defense (AACD 2024)</title>
+    <title>WenXiang Sun</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-
 <body>
-    <!-- <nav class="top-nav">
-        <a href="https://www.zjut.edu.cn/"><img src="school.png" alt="School Logo" class="school-logo"></a>
-        <span class="school-name"></span>
-    </nav> -->
-
-    <ul class="topnav">
-        <li><a class="active" href="#call-for-papers">Call for papers</a></li>
-        <li><a href="#submissions">Submissions</a></li>
-        <li><a href="#dates">Dates</a></li>
-        <li><a href="#keynote-speakers">Keynote Speakers</a></li>
-        <li><a href="#organizers">Organizers</a></li>
-        <li><a href="#program">Program</a></li>
-    </ul>
-
-    <br>
-    <br>
-    <div style="display: flex;flex-direction: row;max-width: 1200px;margin: 30px auto;">
-        <div style="flex: 1;display: flex;flex-direction: column;">
-            <div style="font-size: 26px;font-weight: bold;">
-                11th ACM Workshop on Adaptive and Autonomous Cyber Defense (AACD 2024)
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-text">ws</span>
             </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#skills" class="nav-link">Skills</a></li>
+                <li><a href="#projects" class="nav-link">Projects</a></li>
+                <li><a href="#publications" class="nav-link">Publications</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
 
-            <div style="font-size: 23px;line-height: 1.5;display: flex;flex-direction: column;">
-                <div>In conjunction with the&nbsp;
-                    <a href="https://www.sigsac.org/ccs/CCS2024/" style="font-weight: bold;
-                    color: #007bff;">ACM Conference on Computer and Communications Security
-                        (CCS)</a>
+    <!-- Particle Background (hidden) -->
+    <div id="particles-js"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    <span class="typing-animation">WenXiang Sun</span>
+                </h1>
+                <p class="hero-subtitle">Researcher & Developer</p>
+                <p class="hero-description">
+                    Passionate about cybersecurity research, machine learning, and building 
+                    innovative solutions that bridge theory and practice.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#about" class="btn btn-primary">About Me</a>
+                    <a href="#contact" class="btn btn-secondary">Contact</a>
                 </div>
-                <div style="font-weight: bold;color: #a51417;">TBD, 2024 Salt Lake City, U.S.A.</div>
+            </div>
+            <div class="hero-image">
+                <div class="profile-card">
+                    <div class="profile-img">
+                        <div class="avatar-placeholder">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                    <div class="floating-elements">
+                        <div class="floating-icon icon-1"><i class="fas fa-code"></i></div>
+                        <div class="floating-icon icon-2"><i class="fas fa-shield-alt"></i></div>
+                        <div class="floating-icon icon-3"><i class="fas fa-brain"></i></div>
+                        <div class="floating-icon icon-4"><i class="fas fa-graduation-cap"></i></div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div style="width: 130px;height:130px;">
-            <img src="ccs.png" alt="ACM SIGSAC Logo" class="ccs-logo">
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2 class="section-title">About</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p class="about-description">
+                        I am a researcher at Zhejiang University of Technology, specializing in 
+                        adaptive and autonomous cyber defense systems. My work focuses on the intersection 
+                        of cybersecurity, artificial intelligence, and systems design.
+                    </p>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number" data-target="15">0</div>
+                            <div class="stat-label">Publications</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" data-target="8">0</div>
+                            <div class="stat-label">Projects</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" data-target="5">0</div>
+                            <div class="stat-label">Years</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-visual">
+                    <div class="experience-timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <h4>Web Chair - AACD 2024</h4>
+                                <p>ACM Workshop on Adaptive and Autonomous Cyber Defense</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <h4>Researcher</h4>
+                                <p>Zhejiang University of Technology</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <h4>PhD Candidate</h4>
+                                <p>Computer Science & Cybersecurity</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
 
+    <!-- Skills Section -->
+    <section id="skills" class="skills">
+        <div class="container">
+            <h2 class="section-title">Skills</h2>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <div class="category-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Cybersecurity</h3>
+                    <div class="skill-items">
+                        <div class="skill-item">
+                            <span>Moving Target Defense</span>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-progress="95"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <span>Network Security</span>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-progress="90"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <span>Threat Analysis</span>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-progress="88"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <div class="category-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3>Programming</h3>
+                    <div class="skill-items">
+                        <div class="skill-item">
+                            <span>Python</span>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-progress="92"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <span>JavaScript</span>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-progress="85"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <span>C++</span>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-progress="80"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-    <main class="main-content">
-        <section id="call-for-papers">
-            <h2 style="border-bottom: 6px solid #ccc;">Call for Papers</h2>
-            <p class="section-content">
-                The static nature of current computing systems has made them easy to attack and hard to defend.
-                Adversaries have an asymmetric advantage in that they have the time to study a system, identify its
-                vulnerabilities, and choose the time and place of attack to gain the maximum benefit. The idea of AACD
-                is to impose the same asymmetric disadvantage on attackers by making systems random, diverse, and
-                dynamic and therefore harder to explore and predict. With a constantly changing system and its
-                ever-adapting attack surface, attackers will have to deal with significant uncertainty just like
-                defenders do today. The ultimate goal of AACD is to increase the attackers’ workload so as to level the
-                cybersecurity playing field for defenders and attackers – ultimately tilting it in favor of the
-                defender.
-                <br />
-                <br />
-                The workshop seeks to bring together researchers from academia, government, and industry to report on
-                the latest research efforts on moving-target defense, and to have productive discussion and constructive
-                debate on this topic. We solicit submissions (both short and long) on original research in the broad
-                area of AACD, with possible topics such as those listed below. We also solicit submissions for
-                Systematization of Knowledge. These submissions will be reviewed similar to regular submissions. We also
-                welcome all contributions that fall under the broad scope of AACD, including research that shows
-                negative results.
+                <div class="skill-category">
+                    <div class="category-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>Machine Learning</h3>
+                    <div class="skill-items">
+                        <div class="skill-item">
+                            <span>Deep Learning</span>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-progress="88"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <span>PyTorch</span>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-progress="85"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <span>TensorFlow</span>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-progress="82"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                <br />
-                <br />
-                List of Broad Topics:
-                <li>System randomization</li>
-                <li>Artificial diversity</li>
-                <li>Cyber maneuver and agility</li>
-                <li>Software diversity</li>
-                <li>Dynamic network configuration</li>
-                <li>Moving target in the cloud</li>
-                <li>System diversification techniques</li>
-                <li>Dynamic compilation techniques</li>
-                <li>Adaptive/proactive defenses</li>
-                <li>Intelligent countermeasure selection</li>
-                <li>AACD strategies and planning</li>
-                <li>Deep learning for AACD</li>
-                <li>AACD quantification methods and models</li>
-                <li>AACD evaluation and assessment frameworks</li>
-                <li>Large-scale AACD (using multiple techniques)</li>
-                <li>Moving target in software coding, application API virtualization</li>
-                <li>Autonomous technologies for AACD</li>
-            </p>
-        </section>
+    <!-- Projects Section -->
+    <section id="projects" class="projects">
+        <div class="container">
+            <h2 class="section-title">Projects</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-image">
+                        <div class="project-overlay">
+                            <div class="project-links">
+                                <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
+                                <a href="#" class="project-link"><i class="fab fa-github"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Adaptive Defense System</h3>
+                        <p>AI-powered cybersecurity framework for real-time threat detection and autonomous response mechanisms.</p>
+                        <div class="project-tech">
+                            <span>Python</span>
+                            <span>PyTorch</span>
+                            <span>Docker</span>
+                        </div>
+                    </div>
+                </div>
 
-        <section id="submissions">
-            <h2 style="border-bottom: 6px solid #ccc;">Paper Submissions</h2>
-            <p class="section-content">
-                Submitted papers must not substantially overlap with papers that have been published or simultaneously
-                submitted to a journal or a conference with proceedings. Short submissions should be at most 4 pages in
-                the ACM double-column format. Submissions should be at most 10 pages in the ACM double-column format,
-                excluding well-marked appendices, and at most 12 pages in total. Submissions are not required to be
-                anonymized. SoK submissions could be at most 15 pages long, excluding well-marked appendices, and at
-                most 17 pages in total.
-                <br />
-                <br />
-                Only PDF files will be accepted. Submissions not meeting these guidelines risk rejection without
-                consideration of their merits. Papers must be received by the deadline of June 20, 2024 to be
-                considered. Notification of acceptance or rejection will be sent to authors by August 08, 2024. Camera
-                ready papers must be submitted by September 05, 2024. Authors of accepted papers must guarantee that one
-                of the authors will register and present the paper at the workshop. Proceedings of the workshop will
-                become part of the ACM Digital Library.
-            </p>
-        </section>
+                <div class="project-card">
+                    <div class="project-image">
+                        <div class="project-overlay">
+                            <div class="project-links">
+                                <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
+                                <a href="#" class="project-link"><i class="fab fa-github"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Moving Target Defense</h3>
+                        <p>Comprehensive framework for implementing dynamic defense strategies in cloud environments.</p>
+                        <div class="project-tech">
+                            <span>C++</span>
+                            <span>Kubernetes</span>
+                            <span>AWS</span>
+                        </div>
+                    </div>
+                </div>
 
-        <section id="dates">
-            <h2 style="border-bottom: 6px solid #ccc;">Important Dates</h2>
-            <p class="section-content">
-                <li>Paper submission due: June 20, 2024</li>
-                <li>Notification to authors: August 08, 2024</li>
-                <li>Camera ready due: September 05, 2024</li>
-            </p>
-        </section>
+                <div class="project-card">
+                    <div class="project-image">
+                        <div class="project-overlay">
+                            <div class="project-links">
+                                <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
+                                <a href="#" class="project-link"><i class="fab fa-github"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Security Analytics</h3>
+                        <p>Machine learning platform for analyzing security patterns and predicting cyber threats.</p>
+                        <div class="project-tech">
+                            <span>React</span>
+                            <span>Node.js</span>
+                            <span>MongoDB</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        <section id="keynote-speakers">
-            <h2 style="border-bottom: 6px solid #ccc;">Keynote Speakers</h2>
-            <p class="section-content">
-            <div style="font-weight: bold;color: #a51417;">TBD</div>
-            </p>
-        </section>
+    <!-- Publications Section -->
+    <section id="publications" class="publications">
+        <div class="container">
+            <h2 class="section-title">Publications</h2>
+            <div class="publications-list">
+                <div class="publication-item">
+                    <div class="publication-year">2024</div>
+                    <div class="publication-content">
+                        <h3>Adaptive Autonomous Cyber Defense: A Survey</h3>
+                        <p class="publication-authors">WenXiang Sun, Xiaoli Zhang, et al.</p>
+                        <p class="publication-venue">ACM Computing Surveys</p>
+                        <div class="publication-links">
+                            <a href="#" class="pub-link">PDF</a>
+                            <a href="#" class="pub-link">DOI</a>
+                        </div>
+                    </div>
+                </div>
 
-        <section id="organizers">
-            <h2 style="border-bottom: 6px solid #ccc;">Program Chairs</h2>
-            <p class="section-content">
-                <li>Neil Gong, Duke University, USA</li>
-                <li>Qi Li, Tsinghua University, China</li>
-            </p>
-        </section>
+                <div class="publication-item">
+                    <div class="publication-year">2024</div>
+                    <div class="publication-content">
+                        <h3>ML Approaches for Moving Target Defense</h3>
+                        <p class="publication-authors">WenXiang Sun, Neil Gong, Qi Li</p>
+                        <p class="publication-venue">IEEE TIFS</p>
+                        <div class="publication-links">
+                            <a href="#" class="pub-link">PDF</a>
+                            <a href="#" class="pub-link">DOI</a>
+                        </div>
+                    </div>
+                </div>
 
+                <div class="publication-item">
+                    <div class="publication-year">2023</div>
+                    <div class="publication-content">
+                        <h3>Dynamic Network Configuration</h3>
+                        <p class="publication-authors">WenXiang Sun, Xiaoli Zhang</p>
+                        <p class="publication-venue">ACM CCS</p>
+                        <div class="publication-links">
+                            <a href="#" class="pub-link">PDF</a>
+                            <a href="#" class="pub-link">DOI</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        <section>
-            <h2 style="border-bottom: 6px solid #ccc;">Steering Committee</h2>
-            <p class="section-content">
-                <li>Kun Sun, Chair, George Mason University, USA</li>
-                <li>Sushil Jajodia, George Mason University, USA</li>
-                <li>Cliff Wang, National Science Foundation, USA</li>
-                <li>Dijiang Huang, Arizona State University, USA</li>
-                <li>Hamed Okhravi, MIT Lincoln Laboratory, USA</li>
-                <li>Xinming Ou, University of South Florida, USA</li>
-            </p>
-        </section>
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Contact</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Get in touch</h3>
+                    <p>Interested in collaboration or have questions about my research? Feel free to reach out.</p>
+                    
+                    <div class="contact-items">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>wenxiang.sun@zjut.edu.cn</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-university"></i>
+                            <span>Zhejiang University of Technology</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Hangzhou, China</span>
+                        </div>
+                    </div>
 
-        <section>
-            <h2 style="border-bottom: 6px solid #ccc;">Web Chairs</h2>
-            <p class="section-content">
-                <li>Xiaoli Zhang, Zhejiang University of Technology, China</li>
-                <li>Wenxiang Sun, Zhejiang University of Technology, China</li>
-            </p>
-        </section>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fas fa-graduation-cap"></i></a>
+                    </div>
+                </div>
 
-        <section>
-            <h2 style="border-bottom: 6px solid #ccc;">Program Committee</h2>
-            <p class="section-content">
-            <div style="font-weight: bold;color: #a51417;">TBD</div>
-            </p>
-        </section>
+                <div class="contact-form">
+                    <form class="form">
+                        <div class="form-group">
+                            <input type="text" id="name" name="name" required>
+                            <label for="name">Name</label>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="email" name="email" required>
+                            <label for="email">Email</label>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="subject" name="subject" required>
+                            <label for="subject">Subject</label>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="message" name="message" rows="4" required></textarea>
+                            <label for="message">Message</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        <section id="program">
-            <h2 style="border-bottom: 6px solid #ccc;">Program</h2>
-            <p class="section-content">
-                All times are in Utah time zone (MDT, GMT/UTC -6).
-                <br />
-            <div style="font-weight: bold;color: #a51417;">TBD</div>
-            </p>
-        </section>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 WenXiang Sun. All rights reserved.</p>
+        </div>
+    </footer>
 
-
-
-
-    </main>
-
-    <!-- Add this at the end of your body content -->
-    <div class="to-top">
-        <a href="#top">↑ To the top</a>
-    </div>
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    <script src="main.js"></script>
 </body>
-
-</html>
+</html> 
