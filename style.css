@@ -340,17 +340,13 @@ body::before {
     font-weight: 900;
     line-height: 0.8;
     margin-bottom: 2rem;
-    background: linear-gradient(45deg, var(--neon-pink), var(--neon-cyan), var(--neon-yellow));
-    background-size: 400% 400%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: gradientShift 3s ease-in-out infinite;
+    color: var(--pure-white);
+    text-shadow: 0 2px 20px rgba(255,255,255,0.15);
+    position: relative;
+    z-index: 3;
 }
 
-@keyframes gradientShift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-}
+/* gradientShift not used for title anymore */
 
 .title-line {
     display: block;
@@ -571,35 +567,30 @@ body::before {
     align-items: center;
     gap: 1.5rem;
     margin-bottom: 2rem;
-    padding: 1.5rem;
-    background: var(--transparent-white);
-    border: 1px solid var(--neon-cyan);
-    transition: var(--intense-transition);
+    padding: 1.25rem 1.5rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.12);
+    transition: none;
+    cursor: default;
 }
 
-.info-item:hover {
-    background: var(--neon-cyan);
-    color: var(--pure-black);
-    transform: translateX(10px);
-    box-shadow: 0 0 30px var(--neon-cyan);
-}
+/* remove interactive hover to avoid misleading affordance */
+.info-item:hover { background: rgba(255,255,255,0.05); color: inherit; transform: none; box-shadow: none; }
 
 .info-icon {
-    width: 60px;
-    height: 60px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.8rem;
-    color: var(--neon-cyan);
-    border: 2px solid var(--neon-cyan);
-    transition: var(--intense-transition);
+    font-size: 1.4rem;
+    color: var(--light-gray);
+    border: 1px solid rgba(255,255,255,0.12);
+    transition: none;
 }
 
-.info-item:hover .info-icon {
-    color: var(--pure-black);
-    border-color: var(--pure-black);
-}
+/* keep static look */
+.info-item:hover .info-icon { color: var(--light-gray); border-color: rgba(255,255,255,0.12); }
 
 .info-text {
     display: flex;
@@ -608,16 +599,16 @@ body::before {
 }
 
 .info-label {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 1px;
-    opacity: 0.8;
+    opacity: 0.7;
     font-family: var(--font-mono);
     font-weight: 600;
 }
 
 .info-value {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 700;
     font-family: var(--font-mono);
 }
