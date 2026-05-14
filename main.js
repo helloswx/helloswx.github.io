@@ -13,177 +13,218 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ============================================================
-//  Three.js 3D Particle Background
+//  Three.js 3D Scene — Wireframe centerpiece + particle field
 // ============================================================
 function initThreeJSBackground() {
     if (typeof THREE === 'undefined') return;
 
-    const isMobile = window.innerWidth <= 768;
-    const PARTICLE_COUNT = isMobile ? 200 : 700;
-    const CONNECTION_DIST = isMobile ? 8 : 14;
-    const MAX_CONNECTIONS = isMobile ? 0 : 1;
+    var isMobile = window.innerWidth <= 768;
+    var W = window.innerWidth;
+    var H = window.innerHeight;
 
-    // --- Scene setup ---
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.5, 200);
-    camera.position.set(0, 0, 55);
+    // --- Scene, Camera, Renderer ---
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(55, W / H, 0.5, 300);
+    camera.position.set(0, 0, isMobile ? 35 : 45);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(W, H);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x000000, 0);
+    renderer.domElement.id = 'bg-canvas';
+    document.body.prepend(renderer.domElement);
 
-    const canvas = renderer.domElement;
-    canvas.id = 'bg-canvas';
-    document.body.prepend(canvas);
+    // --- Lighting (for mesh) ---
+    var ambientLight = new THREE.AmbientLight(0x222244, 0.5);
+    scene.add(ambientLight);
 
-    // --- Glow sprite texture ---
-    function createGlowTexture(color, size) {
-        var c = document.createElement('canvas');
-        c.width = size;
-        c.height = size;
-        var ctx = c.getContext('2d');
-        var gradient = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
-        gradient.addColorStop(0, color);
-        gradient.addColorStop(0.15, color);
-        gradient.addColorStop(0.5, 'rgba(0,0,0,0)');
-        gradient.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.fillStyle = gradient;
+    // --- Glow texture for particles ---
+    function makeGlow(r, g, b, size) {
+        var canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        var ctx = canvas.getContext('2d');
+        var gd = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+        gd.addColorStop(0, 'rgba(' + r + ',' + g + ',' + b + ',1)');
+        gd.addColorStop(0.08, 'rgba(' + r + ',' + g + ',' + b + ',0.9)');
+        gd.addColorStop(0.3, 'rgba(' + r + ',' + g + ',' + b + ',0.2)');
+        gd.addColorStop(0.7, 'rgba(0,0,0,0)');
+        ctx.fillStyle = gd;
         ctx.fillRect(0, 0, size, size);
-        return new THREE.CanvasTexture(c);
+        return new THREE.CanvasTexture(canvas);
     }
 
-    var glowTexCyan = createGlowTexture('rgba(0, 255, 255, 1)', 64);
-    var glowTexPink = createGlowTexture('rgba(255, 0, 110, 1)', 64);
-    var glowTexBlue = createGlowTexture('rgba(0, 71, 255, 1)', 64);
+    var texCyan = makeGlow(0, 255, 255, 64);
+    var texPink = makeGlow(255, 0, 110, 64);
+    var texWhite = makeGlow(200, 220, 255, 64);
 
-    // --- Particles ---
-    var particleGroup = new THREE.Group();
-    scene.add(particleGroup);
+    // ============================================
+    //  1. CENTERPIECE — Glowing wireframe Icosahedron
+    // ============================================
+    var icoGeom = new THREE.IcosahedronGeometry(isMobile ? 4 : 6, 1);
+    var icoEdges = new THREE.EdgesGeometry(icoGeom);
+    var icoLine = new THREE.LineSegments(icoEdges,
+        new THREE.LineBasicMaterial({
+            color: 0x00ffff,
+            transparent: true,
+            opacity: 0.6,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+        })
+    );
+    scene.add(icoLine);
 
-    var positions = new Float32Array(PARTICLE_COUNT * 3);
-    var colors = new Float32Array(PARTICLE_COUNT * 3);
-    var origins = new Float32Array(PARTICLE_COUNT * 3);
+    // Outer wireframe sphere (subtle)
+    var sphereGeom = new THREE.SphereGeometry(isMobile ? 5.5 : 8, 32, 16);
+    var sphereWire = new THREE.LineSegments(
+        new THREE.EdgesGeometry(sphereGeom),
+        new THREE.LineBasicMaterial({
+            color: 0xff006e,
+            transparent: true,
+            opacity: 0.15,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+        })
+    );
+    scene.add(sphereWire);
 
-    var palette = [
-        new THREE.Color('#00ffff'),
-        new THREE.Color('#ff006e'),
-        new THREE.Color('#0047ff'),
-        new THREE.Color('#39ff14'),
-        new THREE.Color('#ff1493'),
+    // ============================================
+    //  2. ORBITING RING of bright glow particles
+    // ============================================
+    var ringCount = isMobile ? 80 : 200;
+    var ringGeom = new THREE.BufferGeometry();
+    var ringPositions = new Float32Array(ringCount * 3);
+    var ringColors = new Float32Array(ringCount * 3);
+    var ringRadius = isMobile ? 5 : 7.5;
+
+    var ringPalette = [
+        [0, 1, 1],    // cyan
+        [1, 0, 0.43], // pink
+        [0, 0.28, 1], // blue
     ];
 
-    for (var i = 0; i < PARTICLE_COUNT; i++) {
-        var x = (Math.random() - 0.5) * 80;
-        var y = (Math.random() - 0.5) * 60;
-        var z = (Math.random() - 0.5) * 40;
-        positions[i * 3] = x;
-        positions[i * 3 + 1] = y;
-        positions[i * 3 + 2] = z;
-        origins[i * 3] = x;
-        origins[i * 3 + 1] = y;
-        origins[i * 3 + 2] = z;
-
-        var c = palette[Math.floor(Math.random() * palette.length)];
-        colors[i * 3] = c.r;
-        colors[i * 3 + 1] = c.g;
-        colors[i * 3 + 2] = c.b;
+    for (var i = 0; i < ringCount; i++) {
+        var angle = (i / ringCount) * Math.PI * 2;
+        var phi = Math.random() * Math.PI * 0.7 + 0.15;
+        var r = ringRadius + (Math.random() - 0.5) * 1.5;
+        ringPositions[i * 3] = Math.cos(angle) * Math.sin(phi) * r;
+        ringPositions[i * 3 + 1] = Math.cos(phi) * r * 0.6;
+        ringPositions[i * 3 + 2] = Math.sin(angle) * Math.sin(phi) * r;
+        var pc = ringPalette[Math.floor(Math.random() * ringPalette.length)];
+        ringColors[i * 3] = pc[0];
+        ringColors[i * 3 + 1] = pc[1];
+        ringColors[i * 3 + 2] = pc[2];
     }
+    ringGeom.setAttribute('position', new THREE.BufferAttribute(ringPositions, 3));
+    ringGeom.setAttribute('color', new THREE.BufferAttribute(ringColors, 3));
+    var ringMesh = new THREE.Points(ringGeom, new THREE.PointsMaterial({
+        size: isMobile ? 0.35 : 0.45,
+        map: texWhite,
+        vertexColors: true,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        transparent: true,
+        opacity: 0.9,
+    }));
+    scene.add(ringMesh);
 
-    function createParticleLayer(count, size, tex, offset) {
-        var geom = new THREE.BufferGeometry();
-        var pos = new Float32Array(count * 3);
-        var col = new Float32Array(count * 3);
-        for (var i = 0; i < count; i++) {
-            var idx = offset + i;
-            if (idx >= PARTICLE_COUNT) break;
-            pos[i * 3] = positions[idx * 3];
-            pos[i * 3 + 1] = positions[idx * 3 + 1];
-            pos[i * 3 + 2] = positions[idx * 3 + 2];
-            col[i * 3] = colors[idx * 3];
-            col[i * 3 + 1] = colors[idx * 3 + 1];
-            col[i * 3 + 2] = colors[idx * 3 + 2];
-        }
-        geom.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-        geom.setAttribute('color', new THREE.BufferAttribute(col, 3));
-        var mat = new THREE.PointsMaterial({
-            size: size,
-            map: tex,
-            vertexColors: true,
-            blending: THREE.AdditiveBlending,
-            depthWrite: false,
-            transparent: true,
-            opacity: 0.75,
-        });
-        return new THREE.Points(geom, mat);
+    // ============================================
+    //  3. BACKGROUND STARFIELD
+    // ============================================
+    var starCount = isMobile ? 300 : 900;
+    var starGeom = new THREE.BufferGeometry();
+    var starPos = new Float32Array(starCount * 3);
+    var starCol = new Float32Array(starCount * 3);
+    var starOrigins = new Float32Array(starCount * 3);
+
+    var starPalette = [
+        [0, 1, 1], [1, 0, 0.43], [0, 0.28, 1],
+        [0.22, 1, 0.08], [0.6, 0.2, 1],
+    ];
+
+    for (var s = 0; s < starCount; s++) {
+        var sx = (Math.random() - 0.5) * 70;
+        var sy = (Math.random() - 0.5) * 50;
+        var sz = (Math.random() - 0.5) * 35 - 5;
+        starPos[s * 3] = sx;
+        starPos[s * 3 + 1] = sy;
+        starPos[s * 3 + 2] = sz;
+        starOrigins[s * 3] = sx;
+        starOrigins[s * 3 + 1] = sy;
+        starOrigins[s * 3 + 2] = sz;
+        var sc = starPalette[Math.floor(Math.random() * starPalette.length)];
+        starCol[s * 3] = sc[0];
+        starCol[s * 3 + 1] = sc[1];
+        starCol[s * 3 + 2] = sc[2];
     }
+    starGeom.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+    starGeom.setAttribute('color', new THREE.BufferAttribute(starCol, 3));
+    var stars = new THREE.Points(starGeom, new THREE.PointsMaterial({
+        size: isMobile ? 0.2 : 0.28,
+        map: texCyan,
+        vertexColors: true,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        transparent: true,
+        opacity: 0.7,
+    }));
+    scene.add(stars);
 
-    var third = Math.floor(PARTICLE_COUNT / 3);
-    var layer1 = createParticleLayer(third, 0.5, glowTexCyan, 0);
-    var layer2 = createParticleLayer(third, 0.35, glowTexPink, third);
-    var layer3 = createParticleLayer(PARTICLE_COUNT - third * 2, 0.25, glowTexBlue, third * 2);
-    particleGroup.add(layer1);
-    particleGroup.add(layer2);
-    particleGroup.add(layer3);
-
-    // --- Connection lines (desktop only) ---
+    // ============================================
+    //  4. CONNECTION LINES (desktop only)
+    // ============================================
     var linesMesh = null;
-    if (!isMobile && MAX_CONNECTIONS > 0) {
-        var connections = [];
-        for (var i = 0; i < PARTICLE_COUNT; i++) {
-            var bestDist = Infinity;
-            var bestJ = -1;
-            var ix = positions[i * 3];
-            var iy = positions[i * 3 + 1];
-            var iz = positions[i * 3 + 2];
-            for (var j = i + 1; j < PARTICLE_COUNT; j++) {
-                var dx = ix - positions[j * 3];
-                var dy = iy - positions[j * 3 + 1];
-                var dz = iz - positions[j * 3 + 2];
-                var d = dx * dx + dy * dy + dz * dz;
-                if (d < bestDist && d < CONNECTION_DIST * CONNECTION_DIST) {
-                    bestDist = d;
-                    bestJ = j;
-                }
+    if (!isMobile) {
+        var connDist = 8;
+        var pairs = [];
+        for (var ai = 0; ai < starCount; ai++) {
+            var bestD = connDist * connDist;
+            var bestIdx = -1;
+            var ax = starPos[ai * 3], ay = starPos[ai * 3 + 1], az = starPos[ai * 3 + 2];
+            for (var bi = ai + 1; bi < starCount; bi++) {
+                var dx = ax - starPos[bi * 3];
+                var dy = ay - starPos[bi * 3 + 1];
+                var dz = az - starPos[bi * 3 + 2];
+                var d2 = dx * dx + dy * dy + dz * dz;
+                if (d2 < bestD) { bestD = d2; bestIdx = bi; }
             }
-            if (bestJ !== -1) connections.push([i, bestJ]);
+            if (bestIdx !== -1) pairs.push([ai, bestIdx]);
         }
-
-        var lineCount = connections.length;
-        var lineGeom = new THREE.BufferGeometry();
-        var linePos = new Float32Array(lineCount * 6);
-        var lineCol = new Float32Array(lineCount * 6);
-        for (var k = 0; k < lineCount; k++) {
-            var a = connections[k][0];
-            var b = connections[k][1];
-            linePos[k * 6] = positions[a * 3];
-            linePos[k * 6 + 1] = positions[a * 3 + 1];
-            linePos[k * 6 + 2] = positions[a * 3 + 2];
-            linePos[k * 6 + 3] = positions[b * 3];
-            linePos[k * 6 + 4] = positions[b * 3 + 1];
-            linePos[k * 6 + 5] = positions[b * 3 + 2];
-            var alpha = 0.06;
-            lineCol[k * 6] = colors[a * 3] * alpha;
-            lineCol[k * 6 + 1] = colors[a * 3 + 1] * alpha;
-            lineCol[k * 6 + 2] = colors[a * 3 + 2] * alpha;
-            lineCol[k * 6 + 3] = colors[b * 3] * alpha;
-            lineCol[k * 6 + 4] = colors[b * 3 + 1] * alpha;
-            lineCol[k * 6 + 5] = colors[b * 3 + 2] * alpha;
+        if (pairs.length > 0) {
+            var lineGeom = new THREE.BufferGeometry();
+            var lineArr = new Float32Array(pairs.length * 6);
+            var lcolArr = new Float32Array(pairs.length * 6);
+            for (var pi = 0; pi < pairs.length; pi++) {
+                var a = pairs[pi][0], b = pairs[pi][1];
+                lineArr[pi * 6] = starPos[a * 3];
+                lineArr[pi * 6 + 1] = starPos[a * 3 + 1];
+                lineArr[pi * 6 + 2] = starPos[a * 3 + 2];
+                lineArr[pi * 6 + 3] = starPos[b * 3];
+                lineArr[pi * 6 + 4] = starPos[b * 3 + 1];
+                lineArr[pi * 6 + 5] = starPos[b * 3 + 2];
+                lcolArr[pi * 6] = starCol[a * 3] * 0.08;
+                lcolArr[pi * 6 + 1] = starCol[a * 3 + 1] * 0.08;
+                lcolArr[pi * 6 + 2] = starCol[a * 3 + 2] * 0.08;
+                lcolArr[pi * 6 + 3] = starCol[b * 3] * 0.08;
+                lcolArr[pi * 6 + 4] = starCol[b * 3 + 1] * 0.08;
+                lcolArr[pi * 6 + 5] = starCol[b * 3 + 2] * 0.08;
+            }
+            lineGeom.setAttribute('position', new THREE.BufferAttribute(lineArr, 3));
+            lineGeom.setAttribute('color', new THREE.BufferAttribute(lcolArr, 3));
+            linesMesh = new THREE.LineSegments(lineGeom, new THREE.LineBasicMaterial({
+                vertexColors: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+                transparent: true,
+                opacity: 0.3,
+            }));
+            scene.add(linesMesh);
         }
-        lineGeom.setAttribute('position', new THREE.BufferAttribute(linePos, 3));
-        lineGeom.setAttribute('color', new THREE.BufferAttribute(lineCol, 3));
-        var lineMat = new THREE.LineBasicMaterial({
-            vertexColors: true,
-            blending: THREE.AdditiveBlending,
-            depthWrite: false,
-            transparent: true,
-            opacity: 0.25,
-        });
-        linesMesh = new THREE.LineSegments(lineGeom, lineMat);
-        particleGroup.add(linesMesh);
     }
 
-    // --- Mouse / touch tracking ---
+    // ============================================
+    //  INTERACTION
+    // ============================================
     var mouse = { x: 0, y: 0, tx: 0, ty: 0 };
     document.addEventListener('mousemove', function(e) {
         mouse.tx = (e.clientX / window.innerWidth) * 2 - 1;
@@ -196,68 +237,69 @@ function initThreeJSBackground() {
         }
     }, { passive: true });
 
-    // --- Animation ---
+    // ============================================
+    //  ANIMATION LOOP
+    // ============================================
     var clock = new THREE.Clock();
     function animate() {
         requestAnimationFrame(animate);
-
         var dt = Math.min(clock.getDelta(), 0.1);
         var t = performance.now() * 0.001;
 
-        // Smooth mouse follow
-        mouse.x += (mouse.tx - mouse.x) * 2 * dt;
-        mouse.y += (mouse.ty - mouse.y) * 2 * dt;
+        // Smooth mouse
+        mouse.x += (mouse.tx - mouse.x) * 2.5 * dt;
+        mouse.y += (mouse.ty - mouse.y) * 2.5 * dt;
 
-        // Gentle auto-rotation + mouse influence
-        particleGroup.rotation.y += 0.08 * dt;
-        particleGroup.rotation.x += 0.03 * dt;
-        particleGroup.rotation.x += mouse.y * 0.15 * dt;
-        particleGroup.rotation.y += mouse.x * 0.2 * dt;
+        // Rotate centerpiece
+        icoLine.rotation.x += 0.3 * dt;
+        icoLine.rotation.y += 0.5 * dt;
+        icoLine.rotation.z += 0.15 * dt;
+        // Mouse influence on centerpiece
+        icoLine.rotation.y += mouse.x * 0.5 * dt;
+        icoLine.rotation.x += mouse.y * 0.3 * dt;
 
-        // Subtle camera shift
-        camera.position.x += (mouse.x * 3 - camera.position.x) * 1.5 * dt;
-        camera.position.y += (-mouse.y * 2 - camera.position.y) * 1.5 * dt;
+        sphereWire.rotation.x -= 0.1 * dt;
+        sphereWire.rotation.y -= 0.2 * dt;
+
+        // Rotate ring
+        ringMesh.rotation.y += 0.4 * dt;
+        ringMesh.rotation.x += 0.15 * dt;
+        ringMesh.rotation.y += mouse.x * 0.3 * dt;
+        ringMesh.rotation.x += mouse.y * 0.2 * dt;
+
+        // Rotate starfield
+        stars.rotation.y += 0.05 * dt;
+        stars.rotation.x += 0.02 * dt;
+        stars.rotation.y += mouse.x * 0.1 * dt;
+        stars.rotation.x += mouse.y * 0.08 * dt;
+        if (linesMesh) {
+            linesMesh.rotation.copy(stars.rotation);
+        }
+
+        // Wave animation on stars
+        var sp = stars.geometry.attributes.position.array;
+        for (var wi = 0; wi < starCount; wi++) {
+            var ox = starOrigins[wi * 3], oy = starOrigins[wi * 3 + 1], oz = starOrigins[wi * 3 + 2];
+            sp[wi * 3] = ox + Math.sin(t * 0.5 + ox * 0.3) * 0.5;
+            sp[wi * 3 + 1] = oy + Math.cos(t * 0.4 + oy * 0.25) * 0.4;
+            sp[wi * 3 + 2] = oz + Math.sin(t * 0.35 + oz * 0.2) * 0.35;
+        }
+        stars.geometry.attributes.position.needsUpdate = true;
+
+        // Dynamic centerpiece color
+        var hue = (t * 0.05) % 1;
+        var c = new THREE.Color().setHSL(hue, 1, 0.6);
+        icoLine.material.color = c;
+
+        // Subtle camera sway
+        camera.position.x += (mouse.x * 2 - camera.position.x) * 1.2 * dt;
+        camera.position.y += (-mouse.y * 1.5 - camera.position.y) * 1.2 * dt;
         camera.lookAt(0, 0, 0);
-
-        // Animate particle wave drift
-        var posArr1 = layer1.geometry.attributes.position.array;
-        var posArr2 = layer2.geometry.attributes.position.array;
-        var posArr3 = layer3.geometry.attributes.position.array;
-
-        for (var i = 0; i < third; i++) {
-            var idx = i;
-            var ox = origins[idx * 3];
-            var oy = origins[idx * 3 + 1];
-            var oz = origins[idx * 3 + 2];
-            posArr1[i * 3] = ox + Math.sin(t * 0.7 + ox * 0.3) * 0.8;
-            posArr1[i * 3 + 1] = oy + Math.cos(t * 0.6 + oy * 0.25) * 0.6;
-            posArr1[i * 3 + 2] = oz + Math.sin(t * 0.5 + oz * 0.2) * 0.5;
-
-            var idx2 = third + i;
-            if (idx2 < PARTICLE_COUNT) {
-                posArr2[i * 3] = origins[idx2 * 3] + Math.cos(t * 0.55 + origins[idx2 * 3] * 0.25) * 0.7;
-                posArr2[i * 3 + 1] = origins[idx2 * 3 + 1] + Math.sin(t * 0.65 + origins[idx2 * 3 + 1] * 0.3) * 0.55;
-                posArr2[i * 3 + 2] = origins[idx2 * 3 + 2] + Math.cos(t * 0.45 + origins[idx2 * 3 + 2] * 0.2) * 0.45;
-            }
-        }
-        for (var j = 0; j < PARTICLE_COUNT - third * 2; j++) {
-            var idx3 = third * 2 + j;
-            if (idx3 >= PARTICLE_COUNT) break;
-            posArr3[j * 3] = origins[idx3 * 3] + Math.sin(t * 0.6 + origins[idx3 * 3] * 0.2) * 0.9;
-            posArr3[j * 3 + 1] = origins[idx3 * 3 + 1] + Math.cos(t * 0.5 + origins[idx3 * 3 + 1] * 0.3) * 0.65;
-            posArr3[j * 3 + 2] = origins[idx3 * 3 + 2] + Math.sin(t * 0.55 + origins[idx3 * 3 + 2] * 0.15) * 0.5;
-        }
-
-        layer1.geometry.attributes.position.needsUpdate = true;
-        layer2.geometry.attributes.position.needsUpdate = true;
-        layer3.geometry.attributes.position.needsUpdate = true;
 
         renderer.render(scene, camera);
     }
-
     animate();
 
-    // --- Resize ---
     window.addEventListener('resize', function() {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
