@@ -11,86 +11,173 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <main class="container">
-        <div class="hero">
-            <div class="name-block">
-                <h1 class="name">
-                    <span class="name-line">WenXiang</span>
-                    <span class="name-line name-italic">Sun</span>
+    <main>
+        <!-- ============================================ -->
+        <!--  HERO                                        -->
+        <!-- ============================================ -->
+        <section id="hero" class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-name">
+                    <span class="hn-line">WenXiang</span>
+                    <span class="hn-line hn-italic">Sun</span>
                 </h1>
+                <div class="hero-roles">
+                    <span>Blockchain Researcher</span>
+                    <span class="sep-dot"></span>
+                    <span>Security Expert</span>
+                    <span class="sep-dot"></span>
+                    <span>AI Developer</span>
+                </div>
+                <p class="hero-desc">Building secure, decentralized systems end-to-end&nbsp;&mdash;&nbsp;from EVM bytecode to global payment infrastructure and embodied AI safety.</p>
             </div>
-            <div class="roles">
-                <span>Blockchain Researcher</span>
-                <span class="dot"></span>
-                <span>Security Expert</span>
-                <span class="dot"></span>
-                <span>AI Developer</span>
+            <div class="scroll-hint" id="scrollHint">
+                <span class="scroll-word">Scroll</span>
+                <div class="scroll-line"><div class="scroll-line-inner"></div></div>
             </div>
-        </div>
+        </section>
 
-        <div class="card">
-            <div class="card-line"></div>
-            <p>Specializing in EVM security, LLMs, global payment systems, and full&#8209;stack web engineering. I build secure, decentralized experiences end&#8209;to&#8209;end&nbsp;&mdash;&nbsp;from smart contracts to scalable backends and modern UIs.</p>
-        </div>
-
-        <section class="work">
-            <h2 class="section-label">Selected Work</h2>
-            <div class="work-grid">
-                <div class="work-card">
-                    <div class="work-card-meta">
-                        <span class="work-tag">IEEE TIFS &middot; CCF-A</span>
-                    </div>
-                    <h3 class="work-title">Smart Contract Defense</h3>
-                    <p class="work-desc">Real-time EVM vulnerability interception with DSL&#8209;based security policy compiler. 100% interception across 185M transactions at only 8% throughput cost.</p>
+        <!-- ============================================ -->
+        <!--  PROJECT 1 — Smart Contract Defense         -->
+        <!-- ============================================ -->
+        <section id="proj-defense" class="project" data-accent="gold">
+            <div class="proj-container">
+                <div class="proj-meta reveal">
+                    <span class="proj-tag">IEEE TIFS &middot; CCF-A Publication</span>
                 </div>
-                <div class="work-card">
-                    <div class="work-card-meta">
-                        <span class="work-tag">37 Countries</span>
+                <h2 class="proj-title reveal">Smart Contract<br>Defense</h2>
+                <div class="proj-body defense-layout reveal">
+                    <div class="defense-stat">
+                        <span class="big-num" data-count="100">0</span><span class="big-num-suffix">%</span>
+                        <span class="stat-label">Interception Rate</span>
                     </div>
-                    <h3 class="work-title">Global Knowledge Platform</h3>
-                    <p class="work-desc">Distributed payment &amp; access control supporting 14 currencies and 24 languages. Central&#8209;Edge sync architecture with Stripe + Crypto settlement.</p>
-                </div>
-                <div class="work-card">
-                    <div class="work-card-meta">
-                        <span class="work-tag">NVIDIA ACE</span>
+                    <div class="defense-text">
+                        <p>Real-time EVM vulnerability interception with a DSL-based security policy compiler that translates transaction intent into minimal-privilege function permissions at the bytecode level.</p>
+                        <div class="defense-metrics">
+                            <div><span class="met-num" data-count="185">0</span><span>M</span><small>Transactions Tested</small></div>
+                            <div><span class="met-num" data-count="12">0</span><small>Vulnerability Classes</small></div>
+                            <div><span>8</span><span>%</span><small>Throughput Cost</small></div>
+                            <div><span>0.3</span><span>μs</span><small>Per-Check Latency</small></div>
+                        </div>
                     </div>
-                    <h3 class="work-title">Digital Human System</h3>
-                    <p class="work-desc">Multi&#8209;modal avatar pipeline on UE5 + NVIDIA ACE. Custom TCP/UDP hybrid streaming with end&#8209;to&#8209;end latency under 200ms.</p>
-                </div>
-                <div class="work-card">
-                    <div class="work-card-meta">
-                        <span class="work-tag">In Research</span>
-                    </div>
-                    <h3 class="work-title">Agent Behavior Identification</h3>
-                    <p class="work-desc">Side&#8209;channel based Android Agent detection. 100% test accuracy &mdash; clear probability separation between Human and Agent behavior patterns.</p>
                 </div>
             </div>
         </section>
 
-        <div class="background">
-            <span>M.S. Software Engineering &middot; Zhejiang University of Technology</span>
-            <span class="bg-dot"></span>
-            <span>Research Assistant &middot; CityU Hong Kong (Dongguan)</span>
-            <span class="bg-dot"></span>
-            <span>Tianchi Champion &middot; 1 / 3,304</span>
-        </div>
-
-        <footer class="contact">
-            <a href="https://github.com/helloswx" class="contact-item" target="_blank" rel="noopener">
-                <i class="fab fa-github"></i>
-                <span>github.com/helloswx</span>
-            </a>
-            <a href="mailto:helloswx@126.com" class="contact-item">
-                <i class="far fa-envelope"></i>
-                <span>helloswx@126.com</span>
-            </a>
-            <div class="contact-item">
-                <i class="fab fa-weixin"></i>
-                <span>helloswx_wechat</span>
+        <!-- ============================================ -->
+        <!--  PROJECT 2 — Global Knowledge Platform      -->
+        <!-- ============================================ -->
+        <section id="proj-platform" class="project" data-accent="indigo">
+            <div class="proj-container">
+                <div class="proj-meta reveal">
+                    <span class="proj-tag">Production System &middot; Live</span>
+                </div>
+                <div class="platform-stats reveal">
+                    <div class="pstat">
+                        <span class="big-num" data-count="37">0</span>
+                        <span class="stat-label">Countries</span>
+                    </div>
+                    <div class="pstat">
+                        <span class="big-num" data-count="24">0</span>
+                        <span class="stat-label">Languages</span>
+                    </div>
+                    <div class="pstat">
+                        <span class="big-num" data-count="14">0</span>
+                        <span class="stat-label">Currencies</span>
+                    </div>
+                </div>
+                <h2 class="proj-title reveal">Global Knowledge<br>Platform</h2>
+                <div class="proj-body platform-body reveal">
+                    <p>Distributed payment and access-control platform built on a Central-Edge architecture. Global state synchronization in under one second. Deep Stripe + Crypto integration for multi-currency automated clearing and settlement.</p>
+                    <div class="platform-meta-row">
+                        <span>67K+ monthly active users</span>
+                        <span class="sep-dot"></span>
+                        <span>10K+ QPS auth engine</span>
+                        <span class="sep-dot"></span>
+                        <span>Zero-manual settlement</span>
+                    </div>
+                </div>
             </div>
-            <div class="contact-divider"></div>
-            <span class="location">HANGZHOU</span>
-        </footer>
+        </section>
+
+        <!-- ============================================ -->
+        <!--  PROJECT 3 — Digital Human System           -->
+        <!-- ============================================ -->
+        <section id="proj-digital" class="project" data-accent="teal">
+            <div class="proj-container">
+                <div class="proj-meta reveal">
+                    <span class="proj-tag">NVIDIA ACE &middot; Unreal Engine 5</span>
+                </div>
+                <div class="digital-layout reveal">
+                    <div class="digital-text">
+                        <h2 class="proj-title">Digital Human<br>System</h2>
+                        <p>A complete multi-modal interactive avatar pipeline. Multi-modal instructions mapped to UE5 skeletal animation. Custom TCP/UDP hybrid streaming protocol for reliable, low-latency delivery under network jitter.</p>
+                        <p>Rewrote ACE rendering engine cache eviction to solve GPU memory overflow and animation backlog during extended sessions.</p>
+                    </div>
+                    <div class="digital-stat">
+                        <div class="latency-ring">
+                            <span class="big-num" data-count="200">0</span>
+                            <span class="big-num-suffix">ms</span>
+                        </div>
+                        <span class="stat-label">End-to-End Latency</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!--  PROJECT 4 — Agent Behavior Identification  -->
+        <!-- ============================================ -->
+        <section id="proj-agent" class="project" data-accent="amber">
+            <div class="proj-container">
+                <div class="proj-meta reveal">
+                    <span class="proj-tag">In Research</span>
+                </div>
+                <div class="agent-layout reveal">
+                    <div class="agent-stat-center">
+                        <span class="big-num" data-count="100">0</span><span class="big-num-suffix">%</span>
+                        <span class="stat-label">Test Accuracy</span>
+                    </div>
+                    <h2 class="proj-title">Agent Behavior<br>Identification</h2>
+                    <p>Side-channel based Android Agent detection model. Memory features contribute 72.4% to classification. Human-vs-Agent probability distributions show clear separation, indicating strong generalization and real-world deployment readiness.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!--  EDUCATION & CONTACT                        -->
+        <!-- ============================================ -->
+        <section id="about" class="about-section">
+            <div class="about-grid reveal">
+                <div class="about-item">
+                    <span class="about-icon">&#9670;</span>
+                    <span class="about-label">Education</span>
+                    <span class="about-value">M.S. Software Engineering<br>Zhejiang University of Technology</span>
+                </div>
+                <div class="about-item">
+                    <span class="about-icon">&#9670;</span>
+                    <span class="about-label">Research</span>
+                    <span class="about-value">Research Assistant<br>City University of Hong Kong (Dongguan)</span>
+                </div>
+                <div class="about-item">
+                    <span class="about-icon">&#9670;</span>
+                    <span class="about-label">Honor</span>
+                    <span class="about-value">Tianchi Competition<br>Champion &middot; 1 / 3,304</span>
+                </div>
+            </div>
+
+            <footer class="contact-bar reveal">
+                <a href="https://github.com/helloswx" class="contact-link" target="_blank" rel="noopener">
+                    <i class="fab fa-github"></i> github.com/helloswx
+                </a>
+                <a href="mailto:helloswx@126.com" class="contact-link">
+                    <i class="far fa-envelope"></i> helloswx@126.com
+                </a>
+                <span class="contact-link">
+                    <i class="fab fa-weixin"></i> helloswx_wechat
+                </span>
+                <span class="contact-loc">HANGZHOU</span>
+            </footer>
+        </section>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>

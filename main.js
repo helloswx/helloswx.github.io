@@ -1,15 +1,17 @@
 // ============================================================
-//  Dark Observatory — Three.js Armillary Sphere + Particles
+//  Dark Observatory — 3D Scene + Scroll Interactions
 // ============================================================
 
 (function() {
+    // ============================================
+    //  1. THREE.JS SCENE
+    // ============================================
     if (typeof THREE === 'undefined') return;
 
     var isMobile = window.innerWidth <= 768;
     var W = window.innerWidth;
     var H = window.innerHeight;
 
-    // --- Scene ---
     var scene = new THREE.Scene();
 
     var camera = new THREE.PerspectiveCamera(48, W / H, 0.3, 80);
@@ -27,7 +29,7 @@
     renderer.toneMappingExposure = 1.2;
     document.body.prepend(renderer.domElement);
 
-    // --- Lighting ---
+    // Lighting
     var ambient = new THREE.AmbientLight(0x1a1a2e, 2.5);
     scene.add(ambient);
 
@@ -48,9 +50,7 @@
     rimLight.position.set(0, 6, -6);
     scene.add(rimLight);
 
-    // ============================================
-    //  Armillary Sphere — 3 perpendicular rings
-    // ============================================
+    // Armillary Sphere
     var ringGroup = new THREE.Group();
     scene.add(ringGroup);
     ringGroup.position.set(0, 0.8, 0);
@@ -75,21 +75,17 @@
         return mesh;
     }
 
-    // Ring 1 — XY plane (default torus orientation)
     var ring1 = createRing(ringRadius, tubeRadius, 0xc8a951, 0x2a1a00, 0.5);
     ringGroup.add(ring1);
 
-    // Ring 2 — rotated 90° around X (YZ plane)
     var ring2 = createRing(ringRadius, tubeRadius, 0xd4b96a, 0x2a1a00, 0.4);
     ring2.rotation.x = Math.PI / 2;
     ringGroup.add(ring2);
 
-    // Ring 3 — rotated 90° around Y (XZ plane)
     var ring3 = createRing(ringRadius, tubeRadius, 0xbfa04d, 0x2a1a00, 0.45);
     ring3.rotation.y = Math.PI / 2;
     ringGroup.add(ring3);
 
-    // Small center sphere
     var sphereGeom = new THREE.SphereGeometry(tubeRadius * 3, 32, 32);
     var sphereMat = new THREE.MeshStandardMaterial({
         color: 0xffeedd,
@@ -101,14 +97,11 @@
     var centerSphere = new THREE.Mesh(sphereGeom, sphereMat);
     ringGroup.add(centerSphere);
 
-    // ============================================
-    //  Particle Field
-    // ============================================
+    // Particle Field
     var particleCount = isMobile ? 350 : 700;
     var particleGroup = new THREE.Group();
     scene.add(particleGroup);
 
-    // Glow texture
     function makeGlow(r, g, b, size) {
         var c = document.createElement('canvas');
         c.width = size;
@@ -133,7 +126,6 @@
         var geom = new THREE.BufferGeometry();
         var positions = new Float32Array(count * 3);
         var origins = new Float32Array(count * 3);
-
         for (var i = 0; i < count; i++) {
             var x = (Math.random() - 0.5) * spreadX;
             var y = (Math.random() - 0.5) * spreadY;
@@ -145,21 +137,17 @@
             origins[i * 3 + 1] = y;
             origins[i * 3 + 2] = z;
         }
-
         geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        var sizeVal = sizes[0] + Math.random() * (sizes[1] - sizes[0]);
         var mat = new THREE.PointsMaterial({
-            size: sizes[0] + Math.random() * (sizes[1] - sizes[0]),
+            size: sizeVal,
             map: tex,
             blending: THREE.AdditiveBlending,
             depthWrite: false,
             transparent: true,
             opacity: 0.6 + Math.random() * 0.3,
         });
-
-        return {
-            mesh: new THREE.Points(geom, mat),
-            origins: origins,
-        };
+        return { mesh: new THREE.Points(geom, mat), origins: origins };
     }
 
     var layer1 = createParticles(Math.floor(particleCount * 0.5), 22, 14, 10, texWarm, [0.08, 0.18]);
@@ -170,9 +158,7 @@
     particleGroup.add(layer2.mesh);
     particleGroup.add(layer3.mesh);
 
-    // ============================================
-    //  Interaction
-    // ============================================
+    // Mouse tracking
     var mouse = { x: 0, y: 0, tx: 0, ty: 0, isMoving: false };
     var moveTimeout;
 
@@ -195,7 +181,121 @@
     }, { passive: true });
 
     // ============================================
-    //  Animation
+    //  2. SCROLL-BASED 3D REACTION
+    // ============================================
+    var currentSection = 'hero';
+    var sectionAccents = {
+        'hero':            0xc8a951, // gold
+        'proj-defense':    0xc8a951, // gold
+        'proj-platform':   0x7b8cc8, // indigo
+        'proj-digital':    0x5ea8a0, // teal
+        'proj-agent':      0xc89551, // amber
+    };
+
+    function updateCurrentSection() {
+        var sections = document.querySelectorAll('section[id]');
+        var bestId = 'hero';
+        var bestRatio = 0;
+        sections.forEach(function(sec) {
+            var rect = sec.getBoundingClientRect();
+            var visibleH = Math.min(rect.bottom, H) - Math.max(rect.top, 0);
+            if (visibleH <= 0) return;
+            var ratio = visibleH / rect.height;
+            if (ratio > bestRatio) { bestRatio = ratio; bestId = sec.id; }
+        });
+        currentSection = bestId;
+    }
+
+    // ============================================
+    //  3. NUMBER COUNTER
+    // ============================================
+    function animateNumber(el) {
+        var target = parseInt(el.getAttribute('data-count'), 10);
+        if (isNaN(target)) return;
+        var current = 0;
+        var duration = 1200;
+        var start = performance.now();
+
+        function tick(now) {
+            var elapsed = now - start;
+            var progress = Math.min(elapsed / duration, 1);
+            // ease-out
+            progress = 1 - Math.pow(1 - progress, 3);
+            current = Math.round(target * progress);
+            el.textContent = current;
+            if (progress < 1) {
+                requestAnimationFrame(tick);
+            } else {
+                el.textContent = target;
+            }
+        }
+        requestAnimationFrame(tick);
+    }
+
+    // ============================================
+    //  4. INTERSECTION OBSERVER
+    // ============================================
+    var observerOptions = { threshold: 0.2, rootMargin: '0px 0px -40px 0px' };
+
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                var el = entry.target;
+
+                // Trigger reveal
+                if (el.classList.contains('reveal')) {
+                    el.classList.add('visible');
+                }
+
+                // Trigger children reveal
+                if (el.classList.contains('reveal-children')) {
+                    el.classList.add('visible');
+                }
+
+                // Animate numbers inside
+                var nums = el.querySelectorAll('.big-num[data-count], .met-num[data-count]');
+                nums.forEach(function(num) {
+                    if (!num.dataset.animated) {
+                        num.dataset.animated = '1';
+                        animateNumber(num);
+                    }
+                });
+
+                observer.unobserve(el);
+            }
+        });
+    }, observerOptions);
+
+    // Observe all elements with .reveal or .reveal-children
+    document.querySelectorAll('.reveal, .reveal-children').forEach(function(el) {
+        observer.observe(el);
+    });
+
+    // ============================================
+    //  5. SCROLL HINT
+    // ============================================
+    var scrollHint = document.getElementById('scrollHint');
+    if (scrollHint) {
+        scrollHint.addEventListener('click', function() {
+            var firstProject = document.querySelector('.project');
+            if (firstProject) {
+                firstProject.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+
+        // Hide hint after user scrolls
+        var hintHidden = false;
+        window.addEventListener('scroll', function() {
+            if (!hintHidden && window.scrollY > 100) {
+                hintHidden = true;
+                scrollHint.style.opacity = '0';
+                setTimeout(function() { scrollHint.style.display = 'none'; }, 300);
+            }
+        }, { passive: true });
+    }
+
+    // ============================================
+    //  6. ANIMATION LOOP
     // ============================================
     var clock = new THREE.Clock();
 
@@ -205,24 +305,35 @@
         var dt = Math.min(clock.getDelta(), 0.12);
         var t = performance.now() * 0.001;
 
+        // Update current section
+        updateCurrentSection();
+
+        var accentColor = sectionAccents[currentSection] || 0xc8a951;
+
         // Smooth mouse
         var lerpSpeed = mouse.isMoving ? 2.5 : 1;
         mouse.x += (mouse.tx - mouse.x) * lerpSpeed * dt;
         mouse.y += (mouse.ty - mouse.y) * lerpSpeed * dt;
 
-        // Ring rotations — each at different speeds
+        // Ring rotations
         ring1.rotation.z += 0.12 * dt;
         ring2.rotation.z += 0.18 * dt;
         ring3.rotation.z += 0.08 * dt;
 
-        // Mouse influence on rings
+        // Mouse + auto rotation
         ringGroup.rotation.y += mouse.x * 0.2 * dt;
         ringGroup.rotation.x += mouse.y * 0.15 * dt;
-
-        // Auto-rotate ring group slowly
         ringGroup.rotation.y += 0.06 * dt;
 
-        // Subtle center sphere pulsing
+        // Subtly shift ring colors toward section accent
+        var targetColor = new THREE.Color(accentColor);
+        var currentColor = new THREE.Color(ring1.material.color.getHex());
+        currentColor.lerp(targetColor, 0.3 * dt);
+        ring1.material.color.set(currentColor);
+        ring2.material.color.set(new THREE.Color(accentColor).multiplyScalar(1.1));
+        ring3.material.color.set(new THREE.Color(accentColor).multiplyScalar(0.9));
+
+        // Center sphere pulse
         var pulse = 1 + Math.sin(t * 1.5) * 0.3;
         centerSphere.scale.setScalar(pulse);
         centerSphere.material.emissiveIntensity = 1.2 + Math.sin(t * 1.5) * 0.6;
@@ -244,14 +355,15 @@
         animateLayer(layer2, 0.45, 0.3);
         animateLayer(layer3, 0.55, 0.25);
 
-        // Slow particle group rotation
+        // Particle group rotation
         particleGroup.rotation.y += 0.03 * dt;
         particleGroup.rotation.x += 0.015 * dt;
         particleGroup.rotation.y += mouse.x * 0.08 * dt;
         particleGroup.rotation.x += mouse.y * 0.05 * dt;
 
-        // Camera subtle sway
-        camera.position.x += (mouse.x * 0.7 - camera.position.x) * 0.8 * dt;
+        // Camera sway
+        var scrollFactor = window.scrollY / (document.body.scrollHeight - H);
+        camera.position.x += (mouse.x * 0.7 + scrollFactor * 0.5 - camera.position.x) * 0.8 * dt;
         camera.position.y += (1.2 - mouse.y * 0.5 - camera.position.y) * 0.8 * dt;
         camera.lookAt(0, 0.8, 0);
 
@@ -260,7 +372,7 @@
 
     animate();
 
-    // --- Resize ---
+    // Resize
     window.addEventListener('resize', function() {
         W = window.innerWidth;
         H = window.innerHeight;
@@ -269,7 +381,7 @@
         renderer.setSize(W, H);
     });
 
-    // --- Handle device orientation for mobile ---
+    // Device orientation for mobile
     if (isMobile && window.DeviceOrientationEvent) {
         window.addEventListener('deviceorientation', function(e) {
             if (e.beta && e.gamma) {
