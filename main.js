@@ -1,5 +1,6 @@
 // ============================================================
-//  Dark Observatory — 3D Scene + Project Objects + Transitions
+//  Constellation — 3D Scene + Project Objects
+//  Scale-based transitions, no z-position fly-in
 // ============================================================
 
 (function() {
@@ -9,12 +10,14 @@
     var W = window.innerWidth;
     var H = window.innerHeight;
 
-    // --- Scene ---
+    // ============================================
+    //  SCENE SETUP
+    // ============================================
     var scene = new THREE.Scene();
 
-    var camera = new THREE.PerspectiveCamera(48, W / H, 0.3, 100);
-    camera.position.set(0, 1.2, isMobile ? 16 : 13);
-    camera.lookAt(0, 0, 0);
+    var camera = new THREE.PerspectiveCamera(48, W / H, 0.3, 80);
+    camera.position.set(0, 1.0, isMobile ? 14 : 12);
+    camera.lookAt(0, 0.5, 0);
 
     var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(W, H);
@@ -24,14 +27,16 @@
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.2;
+    renderer.toneMappingExposure = 1.1;
     document.body.prepend(renderer.domElement);
 
-    // --- Lighting ---
-    scene.add(new THREE.AmbientLight(0x1a1a2e, 2.5));
+    // ============================================
+    //  LIGHTING
+    // ============================================
+    scene.add(new THREE.AmbientLight(0x1a1a2e, 2.2));
 
-    var keyLight = new THREE.PointLight(0xffeedd, 80, 25, 1.5);
-    keyLight.position.set(6, 5, 8);
+    var keyLight = new THREE.PointLight(0xffeedd, 70, 22, 1.5);
+    keyLight.position.set(6, 4, 7);
     keyLight.castShadow = true;
     keyLight.shadow.mapSize.width = 512;
     keyLight.shadow.mapSize.height = 512;
@@ -39,85 +44,55 @@
     keyLight.shadow.camera.far = 50;
     scene.add(keyLight);
 
-    scene.add(new THREE.PointLight(0x8888cc, 20, 18, 2)).position.set(-5, -3, 4);
-    scene.add(new THREE.PointLight(0xc8a951, 15, 12, 2)).position.set(0, 6, -6);
+    scene.add(new THREE.PointLight(0x8888cc, 18, 16, 2)).position.set(-5, -2, 4);
+    scene.add(new THREE.PointLight(0xc8a951, 12, 10, 2)).position.set(0, 5, -5);
 
     // ============================================
-    //  ARMILLARY SPHERE (hero constant)
+    //  TEXTURES
     // ============================================
-    var ringGroup = new THREE.Group();
-    scene.add(ringGroup);
-    ringGroup.position.set(0, 0.8, 0);
-
-    var ringR = isMobile ? 2.8 : 3.8;
-    var tubeR = isMobile ? 0.025 : 0.035;
-
-    function makeRing(radius, tube, color) {
-        var g = new THREE.TorusGeometry(radius, tube, 12, 128);
-        var m = new THREE.MeshStandardMaterial({
-            color: color, roughness: 0.22, metalness: 0.95,
-            emissive: 0x2a1a00, emissiveIntensity: 0.5,
-        });
-        var mesh = new THREE.Mesh(g, m);
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
-        return mesh;
-    }
-
-    var ring1 = makeRing(ringR, tubeR, 0xc8a951);
-    ringGroup.add(ring1);
-
-    var ring2 = makeRing(ringR, tubeR, 0xd4b96a);
-    ring2.rotation.x = Math.PI / 2;
-    ringGroup.add(ring2);
-
-    var ring3 = makeRing(ringR, tubeR, 0xbfa04d);
-    ring3.rotation.y = Math.PI / 2;
-    ringGroup.add(ring3);
-
-    var centerSphere = new THREE.Mesh(
-        new THREE.SphereGeometry(tubeR * 3, 32, 32),
-        new THREE.MeshStandardMaterial({
-            color: 0xffeedd, roughness: 0.15, metalness: 0.1,
-            emissive: 0xffd699, emissiveIntensity: 1.5,
-        })
-    );
-    ringGroup.add(centerSphere);
-
-    // ============================================
-    //  PARTICLE FIELD
-    // ============================================
-    var particleCount = isMobile ? 300 : 650;
-    var particleGroup = new THREE.Group();
-    scene.add(particleGroup);
-
-    function makeGlow(r, g, b, size) {
+    function makeGlowTex(r, g, b, size) {
         var c = document.createElement('canvas');
         c.width = size; c.height = size;
         var ctx = c.getContext('2d');
         var grad = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
         grad.addColorStop(0, 'rgba(' + r + ',' + g + ',' + b + ',1)');
-        grad.addColorStop(0.05, 'rgba(' + r + ',' + g + ',' + b + ',0.85)');
-        grad.addColorStop(0.2, 'rgba(' + r + ',' + g + ',' + b + ',0.3)');
-        grad.addColorStop(0.5, 'rgba(' + r + ',' + g + ',' + b + ',0.05)');
+        grad.addColorStop(0.04, 'rgba(' + r + ',' + g + ',' + b + ',0.8)');
+        grad.addColorStop(0.18, 'rgba(' + r + ',' + g + ',' + b + ',0.25)');
+        grad.addColorStop(0.45, 'rgba(' + r + ',' + g + ',' + b + ',0.04)');
         grad.addColorStop(1, 'rgba(0,0,0,0)');
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, size, size);
         return new THREE.CanvasTexture(c);
     }
 
-    var texWarm = makeGlow(255, 245, 230, 64);
-    var texGold = makeGlow(220, 180, 80, 64);
-    var texCool = makeGlow(150, 155, 200, 64);
+    var texStar = makeGlowTex(255, 248, 235, 64);
+    var texGold = makeGlowTex(220, 180, 80, 64);
+    var texCool = makeGlowTex(150, 155, 210, 64);
 
-    function createParticles(count, spreadX, spreadY, spreadZ, tex, sizes) {
+    function glowMaterial(color, emissiveIntensity) {
+        return new THREE.MeshStandardMaterial({
+            color: color,
+            roughness: 0.18,
+            metalness: 0.05,
+            emissive: color,
+            emissiveIntensity: emissiveIntensity || 1.5,
+        });
+    }
+
+    // ============================================
+    //  STARFIELD (background particles)
+    // ============================================
+    var starGroup = new THREE.Group();
+    scene.add(starGroup);
+
+    function createStarLayer(count, spread, tex, sizeRange, opacity) {
         var geom = new THREE.BufferGeometry();
         var positions = new Float32Array(count * 3);
         var origins = new Float32Array(count * 3);
         for (var i = 0; i < count; i++) {
-            var x = (Math.random() - 0.5) * spreadX;
-            var y = (Math.random() - 0.5) * spreadY;
-            var z = (Math.random() - 0.5) * spreadZ;
+            var x = (Math.random() - 0.5) * spread[0];
+            var y = (Math.random() - 0.5) * spread[1];
+            var z = (Math.random() - 0.5) * spread[2];
             positions[i * 3] = x;
             positions[i * 3 + 1] = y;
             positions[i * 3 + 2] = z;
@@ -127,33 +102,87 @@
         }
         geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
         var mat = new THREE.PointsMaterial({
-            size: sizes[0] + Math.random() * (sizes[1] - sizes[0]),
+            size: sizeRange[0] + Math.random() * (sizeRange[1] - sizeRange[0]),
             map: tex,
             blending: THREE.AdditiveBlending,
             depthWrite: false,
             transparent: true,
-            opacity: 0.6 + Math.random() * 0.3,
+            opacity: opacity + Math.random() * 0.2,
         });
-        return { mesh: new THREE.Points(geom, mat), origins: origins };
+        var points = new THREE.Points(geom, mat);
+        starGroup.add(points);
+        return { mesh: points, origins: origins, speed: 0.2 + Math.random() * 0.4, amp: 0.1 + Math.random() * 0.4 };
     }
 
-    var layer1 = createParticles(Math.floor(particleCount * 0.5), 22, 14, 10, texWarm, [0.06, 0.14]);
-    var layer2 = createParticles(Math.floor(particleCount * 0.3), 20, 12, 9, texGold, [0.04, 0.10]);
-    var layer3 = createParticles(Math.floor(particleCount * 0.2), 18, 10, 8, texCool, [0.03, 0.07]);
-    var allLayers = [layer1, layer2, layer3];
+    var starLayers = [];
+    starLayers.push(createStarLayer(isMobile ? 200 : 450, [20, 14, 10], texStar, [0.04, 0.10], 0.55));
+    starLayers.push(createStarLayer(isMobile ? 80 : 180, [18, 12, 9], texGold, [0.03, 0.08], 0.45));
+    starLayers.push(createStarLayer(isMobile ? 50 : 100, [16, 10, 8], texCool, [0.02, 0.06], 0.4));
 
-    particleGroup.add(layer1.mesh);
-    particleGroup.add(layer2.mesh);
-    particleGroup.add(layer3.mesh);
+    // ============================================
+    //  CENTRAL STRUCTURE — Armillary Sphere
+    // ============================================
+    var ringGroup = new THREE.Group();
+    scene.add(ringGroup);
+    ringGroup.position.set(0, 0.5, 0);
+
+    var ringRadius = isMobile ? 2.6 : 3.5;
+    var ringTube = isMobile ? 0.022 : 0.03;
+
+    function createRing(radius, tube, colorHex) {
+        var geom = new THREE.TorusGeometry(radius, tube, 12, 128);
+        var mat = new THREE.MeshStandardMaterial({
+            color: colorHex, roughness: 0.2, metalness: 0.92,
+            emissive: new THREE.Color(colorHex).multiplyScalar(0.3),
+            emissiveIntensity: 0.5,
+        });
+        var mesh = new THREE.Mesh(geom, mat);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        return mesh;
+    }
+
+    var ring1 = createRing(ringRadius, ringTube, 0xc8a951);
+    ringGroup.add(ring1);
+
+    var ring2 = createRing(ringRadius, ringTube, 0xd4b96a);
+    ring2.rotation.x = Math.PI / 2;
+    ringGroup.add(ring2);
+
+    var ring3 = createRing(ringRadius, ringTube, 0xbfa04d);
+    ring3.rotation.y = Math.PI / 2;
+    ringGroup.add(ring3);
+
+    // Glowing center
+    var coreSphere = new THREE.Mesh(
+        new THREE.SphereGeometry(ringTube * 3.5, 32, 32),
+        glowMaterial(0xc8a951, 2.0)
+    );
+    ringGroup.add(coreSphere);
+
+    // Outer glow shell
+    var glowShell = new THREE.Mesh(
+        new THREE.SphereGeometry(ringTube * 6, 32, 32),
+        new THREE.MeshBasicMaterial({
+            color: 0xc8a951,
+            transparent: true,
+            opacity: 0.08,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+        })
+    );
+    ringGroup.add(glowShell);
 
     // ============================================
     //  PROJECT 3D OBJECTS
+    //  All at center position, scale 0.01 initially
     // ============================================
     var projectGroup = new THREE.Group();
+    projectGroup.position.set(0, 0.5, 0);
     scene.add(projectGroup);
 
     var projectObjects = {};
-    var sectionColors = {
+    var accentColors = {
         hero:    0xc8a951,
         defense: 0xc8a951,
         platform:0x7b8cc8,
@@ -161,226 +190,288 @@
         agent:   0xc89551,
     };
 
-    function edgeMaterial(color) {
+    function edgeMat(hex) {
         return new THREE.LineBasicMaterial({
-            color: color,
+            color: hex,
             transparent: true,
-            opacity: 0.75,
+            opacity: 0.7,
             blending: THREE.AdditiveBlending,
             depthWrite: false,
         });
     }
 
-    function nodeMaterial(color) {
-        return new THREE.MeshBasicMaterial({ color: color });
+    // -- DEFENSE: Wireframe Octahedron (crystal/shield) --
+    var defenseObj = new THREE.Group();
+    var octaSize = isMobile ? 1.6 : 2.4;
+    var octaGeom = new THREE.OctahedronGeometry(octaSize, 0);
+    defenseObj.add(new THREE.LineSegments(
+        new THREE.EdgesGeometry(octaGeom),
+        edgeMat(0xc8a951)
+    ));
+    // Inner glow core
+    defenseObj.add(new THREE.Mesh(
+        new THREE.SphereGeometry(0.1, 16, 16),
+        new THREE.MeshBasicMaterial({
+            color: 0xffeedd,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+        })
+    ));
+    defenseObj.add(new THREE.Mesh(
+        new THREE.SphereGeometry(octaSize * 0.35, 32, 32),
+        new THREE.MeshBasicMaterial({
+            color: 0xc8a951,
+            transparent: true,
+            opacity: 0.06,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+        })
+    ));
+    defenseObj.userData = { accent: 0xc8a951, rotSpeed: 0.25 };
+    projectGroup.add(defenseObj);
+    projectObjects.defense = defenseObj;
+
+    // -- PLATFORM: Wireframe Globe + orbiting dots --
+    var platformObj = new THREE.Group();
+    var globeR = isMobile ? 1.5 : 2.2;
+    platformObj.add(new THREE.LineSegments(
+        new THREE.EdgesGeometry(new THREE.SphereGeometry(globeR, 20, 14)),
+        edgeMat(0x7b8cc8)
+    ));
+    // Horizontal ring
+    platformObj.add(new THREE.Mesh(
+        new THREE.TorusGeometry(globeR, 0.025, 8, 64),
+        new THREE.MeshBasicMaterial({
+            color: 0x7b8cc8,
+            transparent: true,
+            opacity: 0.5,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+        })
+    ));
+    // Orbiting dots
+    var orbitDots = new THREE.Group();
+    for (var od = 0; od < 8; od++) {
+        var dot = new THREE.Mesh(
+            new THREE.SphereGeometry(0.06, 8, 8),
+            new THREE.MeshBasicMaterial({
+                color: 0xaab8e8,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+            })
+        );
+        dot.userData = {
+            orbitR: globeR + 0.3,
+            orbitSpeed: 0.4 + Math.random() * 0.8,
+            orbitPhase: Math.random() * Math.PI * 2,
+            orbitPlane: Math.random() * Math.PI,
+        };
+        orbitDots.add(dot);
     }
+    platformObj.add(orbitDots);
+    platformObj.userData = { accent: 0x7b8cc8, rotSpeed: 0.2, orbitGroup: orbitDots };
+    projectGroup.add(platformObj);
+    projectObjects.platform = platformObj;
 
-    // -- Defense: Wireframe Octahedron (shield/diamond) --
-    var defenseGroup = new THREE.Group();
-    var defOcta = new THREE.OctahedronGeometry(isMobile ? 1.8 : 2.5, 0);
-    defenseGroup.add(new THREE.LineSegments(
-        new THREE.EdgesGeometry(defOcta),
-        edgeMaterial(0xc8a951)
+    // -- DIGITAL: Torus Knot --
+    var digitalObj = new THREE.Group();
+    var knotR = isMobile ? 1.1 : 1.5;
+    var knotTube = isMobile ? 0.2 : 0.3;
+    var knotP = isMobile ? 2 : 3;
+    var knotQ = isMobile ? 3 : 5;
+    digitalObj.add(new THREE.LineSegments(
+        new THREE.EdgesGeometry(new THREE.TorusKnotGeometry(knotR, knotTube, isMobile ? 48 : 80, isMobile ? 6 : 10, knotP, knotQ)),
+        edgeMat(0x5ea8a0)
     ));
-    defenseGroup.add(new THREE.Mesh(
-        new THREE.SphereGeometry(0.08, 16, 16),
-        nodeMaterial(0xffeedd)
-    ));
-    defenseGroup.position.set(3.5, 0.3, -1);
-    defenseGroup.scale.set(0.01, 0.01, 0.01);
-    defenseGroup.userData = { targetPos: new THREE.Vector3(3.5, 0.3, -1), color: 0xc8a951 };
-    projectGroup.add(defenseGroup);
-    projectObjects.defense = defenseGroup;
+    digitalObj.userData = { accent: 0x5ea8a0, rotSpeed: 0.3 };
+    projectGroup.add(digitalObj);
+    projectObjects.digital = digitalObj;
 
-    // -- Platform: Wireframe Globe with rings --
-    var platformGroup = new THREE.Group();
-    var globeGeom = new THREE.SphereGeometry(isMobile ? 1.8 : 2.5, 24, 16);
-    platformGroup.add(new THREE.LineSegments(
-        new THREE.EdgesGeometry(globeGeom),
-        edgeMaterial(0x7b8cc8)
-    ));
-    // extra horizontal ring
-    var hRing = new THREE.TorusGeometry(isMobile ? 1.8 : 2.5, 0.03, 8, 64);
-    platformGroup.add(new THREE.Mesh(hRing, new THREE.MeshBasicMaterial({
-        color: 0x7b8cc8, transparent: true, opacity: 0.5,
-        blending: THREE.AdditiveBlending, depthWrite: false,
-    })));
-    platformGroup.position.set(-3.5, 0, -1);
-    platformGroup.scale.set(0.01, 0.01, 0.01);
-    platformGroup.userData = { targetPos: new THREE.Vector3(-3.5, 0, -1), color: 0x7b8cc8 };
-    projectGroup.add(platformGroup);
-    projectObjects.platform = platformGroup;
-
-    // -- Digital: Torus Knot --
-    var digitalGroup = new THREE.Group();
-    var knotGeom = new THREE.TorusKnotGeometry(
-        isMobile ? 1.2 : 1.7,
-        isMobile ? 0.25 : 0.35,
-        isMobile ? 64 : 100,
-        isMobile ? 8 : 12
-    );
-    digitalGroup.add(new THREE.LineSegments(
-        new THREE.EdgesGeometry(knotGeom),
-        edgeMaterial(0x5ea8a0)
-    ));
-    digitalGroup.position.set(3, -0.5, -1.5);
-    digitalGroup.scale.set(0.01, 0.01, 0.01);
-    digitalGroup.userData = { targetPos: new THREE.Vector3(3, -0.5, -1.5), color: 0x5ea8a0 };
-    projectGroup.add(digitalGroup);
-    projectObjects.digital = digitalGroup;
-
-    // -- Agent: Node cluster (like neural network) --
-    var agentGroup = new THREE.Group();
-    var nodeCount = isMobile ? 15 : 25;
+    // -- AGENT: Neural node cluster --
+    var agentObj = new THREE.Group();
+    var nodeCount = isMobile ? 16 : 28;
     var nodePositions = [];
+    var spread = isMobile ? 2.5 : 4;
     for (var ni = 0; ni < nodeCount; ni++) {
-        var nx = (Math.random() - 0.5) * (isMobile ? 3 : 4.5);
-        var ny = (Math.random() - 0.5) * (isMobile ? 2.5 : 3.5);
-        var nz = (Math.random() - 0.5) * (isMobile ? 2 : 3);
+        var nx = (Math.random() - 0.5) * spread;
+        var ny = (Math.random() - 0.5) * spread * 0.7;
+        var nz = (Math.random() - 0.5) * spread * 0.6;
         nodePositions.push([nx, ny, nz]);
-        agentGroup.add(new THREE.Mesh(
-            new THREE.SphereGeometry(isMobile ? 0.06 : 0.08, 8, 8),
-            nodeMaterial(0xc89551)
-        )).position.set(nx, ny, nz);
+        var nodeDot = new THREE.Mesh(
+            new THREE.SphereGeometry(isMobile ? 0.05 : 0.07, 8, 8),
+            new THREE.MeshBasicMaterial({
+                color: 0xc89551,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+            })
+        );
+        nodeDot.position.set(nx, ny, nz);
+        nodeDot.userData = { basePos: [nx, ny, nz], phase: Math.random() * Math.PI * 2 };
+        agentObj.add(nodeDot);
     }
-    // Connect nearest pairs
-    var linePositions = [];
+    // Connect nearby nodes
+    var lineVerts = [];
     for (var ai = 0; ai < nodeCount; ai++) {
-        var bestD = Infinity, bestJ = -1;
         for (var bi = ai + 1; bi < nodeCount; bi++) {
-            var dx2 = nodePositions[ai][0] - nodePositions[bi][0];
-            var dy2 = nodePositions[ai][1] - nodePositions[bi][1];
-            var dz2 = nodePositions[ai][2] - nodePositions[bi][2];
-            var d2 = dx2 * dx2 + dy2 * dy2 + dz2 * dz2;
-            if (d2 < bestD && d2 < (isMobile ? 9 : 16)) { bestD = d2; bestJ = bi; }
-        }
-        if (bestJ !== -1) {
-            linePositions.push(
-                nodePositions[ai][0], nodePositions[ai][1], nodePositions[ai][2],
-                nodePositions[bestJ][0], nodePositions[bestJ][1], nodePositions[bestJ][2]
-            );
+            var dx = nodePositions[ai][0] - nodePositions[bi][0];
+            var dy = nodePositions[ai][1] - nodePositions[bi][1];
+            var dz = nodePositions[ai][2] - nodePositions[bi][2];
+            var dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+            if (dist < spread * 0.5) {
+                lineVerts.push(nodePositions[ai][0], nodePositions[ai][1], nodePositions[ai][2]);
+                lineVerts.push(nodePositions[bi][0], nodePositions[bi][1], nodePositions[bi][2]);
+            }
         }
     }
-    if (linePositions.length > 0) {
+    if (lineVerts.length > 0) {
         var lineGeom = new THREE.BufferGeometry();
-        lineGeom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(linePositions), 3));
-        agentGroup.add(new THREE.LineSegments(lineGeom, edgeMaterial(0xc89551)));
+        lineGeom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(lineVerts), 3));
+        agentObj.add(new THREE.LineSegments(lineGeom, edgeMat(0xc89551)));
     }
-    agentGroup.position.set(-3, 0.6, -1.5);
-    agentGroup.scale.set(0.01, 0.01, 0.01);
-    agentGroup.userData = { targetPos: new THREE.Vector3(-3, 0.6, -1.5), color: 0xc89551 };
-    projectGroup.add(agentGroup);
-    projectObjects.agent = agentGroup;
+    agentObj.userData = { accent: 0xc89551, rotSpeed: 0.15 };
+    projectGroup.add(agentObj);
+    projectObjects.agent = agentObj;
+
+    // All start hidden
+    for (var key in projectObjects) {
+        projectObjects[key].scale.set(0.01, 0.01, 0.01);
+    }
 
     // ============================================
-    //  COMET / STREAK SYSTEM
+    //  STREAK / FLASH SYSTEM (simplified comet)
     // ============================================
-    var cometGroup = new THREE.Group();
-    cometGroup.visible = false;
-    scene.add(cometGroup);
+    var streakGroup = new THREE.Group();
+    streakGroup.visible = false;
+    scene.add(streakGroup);
 
-    var cometTrailCount = isMobile ? 20 : 40;
-    var cometGeom = new THREE.BufferGeometry();
-    var cometPositionsArr = new Float32Array(cometTrailCount * 3);
-    cometGeom.setAttribute('position', new THREE.BufferAttribute(cometPositionsArr, 3));
-    var cometMesh = new THREE.Points(cometGeom, new THREE.PointsMaterial({
-        size: isMobile ? 0.06 : 0.1,
-        map: texWarm,
+    var streakTrailCount = isMobile ? 12 : 20;
+    var streakGeom = new THREE.BufferGeometry();
+    var streakPositions = new Float32Array(streakTrailCount * 3);
+    streakGeom.setAttribute('position', new THREE.BufferAttribute(streakPositions, 3));
+    var streakPoints = new THREE.Points(streakGeom, new THREE.PointsMaterial({
+        size: isMobile ? 0.05 : 0.08,
+        map: texGold,
         blending: THREE.AdditiveBlending,
         depthWrite: false,
         transparent: true,
-        opacity: 0.9,
+        opacity: 0.85,
     }));
-    cometGroup.add(cometMesh);
+    streakGroup.add(streakPoints);
 
-    // Bright head
-    var headGeom = new THREE.SphereGeometry(isMobile ? 0.12 : 0.2, 8, 8);
-    var headMesh = new THREE.Mesh(headGeom, new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false,
-        transparent: true,
-    }));
-    cometGroup.add(headMesh);
-    cometGroup.userData = {
+    var streakHead = new THREE.Mesh(
+        new THREE.SphereGeometry(isMobile ? 0.1 : 0.16, 8, 8),
+        new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+            transparent: true,
+        })
+    );
+    streakGroup.add(streakHead);
+
+    var streakState = {
         active: false,
         startTime: 0,
-        duration: 0.5,
-        direction: new THREE.Vector3(),
+        duration: 0.45,
+        dir: new THREE.Vector3(),
         startPos: new THREE.Vector3(),
     };
 
-    function fireComet(direction) {
-        var ud = cometGroup.userData;
-        ud.active = true;
-        ud.startTime = performance.now() * 0.001;
-        ud.direction.copy(direction);
-        ud.startPos.copy(direction).multiplyScalar(-25);
-        cometGroup.position.copy(ud.startPos);
-        cometGroup.visible = true;
+    function fireStreak() {
+        var dirs = [
+            new THREE.Vector3(1, 0.25, -0.4),
+            new THREE.Vector3(-1, -0.15, -0.35),
+            new THREE.Vector3(0.4, 0.7, -0.5),
+            new THREE.Vector3(-0.6, 0.4, -0.3),
+            new THREE.Vector3(0.8, -0.3, -0.45),
+        ];
+        var d = dirs[Math.floor(Math.random() * dirs.length)].clone().normalize();
+        streakState.active = true;
+        streakState.startTime = performance.now() * 0.001;
+        streakState.dir.copy(d);
+        streakState.startPos.copy(d).multiplyScalar(-20);
+        streakGroup.position.copy(streakState.startPos);
+        streakGroup.visible = true;
+    }
+
+    function updateStreakTrail(headPos, dir) {
+        for (var i = 0; i < streakTrailCount; i++) {
+            var t = i / streakTrailCount;
+            streakPositions[i * 3] = headPos.x - dir.x * t * 6;
+            streakPositions[i * 3 + 1] = headPos.y - dir.y * t * 6;
+            streakPositions[i * 3 + 2] = headPos.z - dir.z * t * 6;
+        }
+        streakGeom.attributes.position.needsUpdate = true;
     }
 
     // ============================================
-    //  TRANSITION STATE
+    //  TRANSITION SYSTEM (scale-based, no z-fly)
     // ============================================
     var currentSection = 'hero';
-    var previousSection = 'hero';
-    var activeObject = null; // currently visible project object
-    var targetObject = null;
-    var transState = {
-        phase: 'idle', // idle | comet | flying-in | done
+    var activeObjName = null;
+    var transition = {
+        phase: 'idle', // idle | streak | scale-in | done
         startTime: 0,
-        fromObj: null,
-        toObj: null,
+        targetName: null,
+        prevName: null,
     };
 
-    function triggerTransition(fromSection, toSection) {
-        if (toSection === fromSection) return;
-        if (toSection === 'hero') {
-            // Going back to hero — hide all project objects
-            targetObject = null;
-            if (activeObject) {
-                transState.phase = 'flying-out';
-                transState.startTime = performance.now() * 0.001;
-                transState.fromObj = activeObject;
-                transState.toObj = null;
-            }
-            activeObject = null;
-            document.body.setAttribute('data-section', 'hero');
-            return;
+    function startTransition(toSection) {
+        if (toSection === currentSection) return;
+
+        // Clean up any in-progress transition
+        if (transition.targetName && projectObjects[transition.targetName]) {
+            projectObjects[transition.targetName].scale.set(0.01, 0.01, 0.01);
+        }
+        if (transition.prevName && projectObjects[transition.prevName]) {
+            projectObjects[transition.prevName].scale.set(0.01, 0.01, 0.01);
         }
 
+        var prev = currentSection;
+        currentSection = toSection;
+
+        // Map section to object name
         var objName = null;
         if (toSection === 'proj-defense') objName = 'defense';
         else if (toSection === 'proj-platform') objName = 'platform';
         else if (toSection === 'proj-digital') objName = 'digital';
         else if (toSection === 'proj-agent') objName = 'agent';
-        if (!objName) return;
 
-        var newObj = projectObjects[objName];
-        if (!newObj || activeObject === newObj) return;
-
-        // Fire comet in a random-ish direction
-        var dirs = [
-            new THREE.Vector3(1, 0.3, -0.5),
-            new THREE.Vector3(-1, -0.2, -0.4),
-            new THREE.Vector3(0.5, 0.8, -0.6),
-            new THREE.Vector3(-0.7, 0.5, -0.3),
-        ];
-        var dir = dirs[Math.floor(Math.random() * dirs.length)];
-        fireComet(dir);
-
-        transState.phase = 'comet';
-        transState.startTime = performance.now() * 0.001;
-        transState.fromObj = activeObject;
-        transState.toObj = newObj;
-        targetObject = newObj;
-
+        // Update body data-section for CSS background
         var accentKey = toSection.replace('proj-', '');
+        if (toSection === 'hero') accentKey = 'hero';
         document.body.setAttribute('data-section', accentKey);
 
-        previousSection = currentSection;
-        currentSection = toSection;
+        if (toSection === 'hero') {
+            // Hide all project objects
+            if (activeObjName && projectObjects[activeObjName]) {
+                transition.phase = 'scale-out';
+                transition.startTime = performance.now() * 0.001;
+                transition.prevName = activeObjName;
+                transition.targetName = null;
+            }
+            activeObjName = null;
+            return;
+        }
+
+        if (!objName || !projectObjects[objName]) return;
+        if (activeObjName === objName) return;
+
+        // Fire streak
+        fireStreak();
+        transition.phase = 'streak';
+        transition.startTime = performance.now() * 0.001;
+        transition.prevName = activeObjName;
+        transition.targetName = objName;
+    }
+
+    // ============================================
+    //  EASING
+    // ============================================
+    function elasticOut(t) {
+        if (t <= 0) return 0;
+        if (t >= 1) return 1;
+        return Math.pow(2, -10 * t) * Math.sin((t - 0.075) * 2 * Math.PI / 0.3) + 1;
     }
 
     // ============================================
@@ -400,45 +491,22 @@
         return best;
     }
 
-    var lastSectionCheck = 'hero';
-
-    function updateSection() {
-        var sec = getVisibleSection();
-        if (sec !== lastSectionCheck) {
-            triggerTransition(lastSectionCheck, sec);
-            lastSectionCheck = sec;
-        }
-    }
+    var trackedSection = 'hero';
 
     // ============================================
-    //  EASING
+    //  MOUSE / TOUCH PARALLAX
     // ============================================
-    function elasticOut(t) {
-        if (t <= 0 || t >= 1) return t;
-        return Math.pow(2, -10 * t) * Math.sin((t - 0.075) * 2 * Math.PI / 0.3) + 1;
-    }
-
-    // ============================================
-    //  MOUSE / TOUCH
-    // ============================================
-    var mouse = { x: 0, y: 0, tx: 0, ty: 0, isMoving: false };
-    var moveTimeout;
+    var mouse = { x: 0, y: 0, tx: 0, ty: 0 };
 
     document.addEventListener('mousemove', function(e) {
         mouse.tx = (e.clientX / W) * 2 - 1;
         mouse.ty = -(e.clientY / H) * 2 + 1;
-        mouse.isMoving = true;
-        clearTimeout(moveTimeout);
-        moveTimeout = setTimeout(function() { mouse.isMoving = false; }, 1500);
     });
 
     document.addEventListener('touchmove', function(e) {
         if (e.touches.length) {
             mouse.tx = (e.touches[0].clientX / W) * 2 - 1;
             mouse.ty = -(e.touches[0].clientY / H) * 2 + 1;
-            mouse.isMoving = true;
-            clearTimeout(moveTimeout);
-            moveTimeout = setTimeout(function() { mouse.isMoving = false; }, 1500);
         }
     }, { passive: true });
 
@@ -446,8 +514,6 @@
     //  ANIMATION LOOP
     // ============================================
     var clock = new THREE.Clock();
-    var burstActive = false;
-    var burstStart = 0;
 
     function animate() {
         requestAnimationFrame(animate);
@@ -455,160 +521,164 @@
         var dt = Math.min(clock.getDelta(), 0.12);
         var t = performance.now() * 0.001;
 
-        // Section tracking (throttled)
-        if (Math.floor(t * 4) !== Math.floor((t - dt) * 4)) {
-            updateSection();
+        // Section tracking (4Hz)
+        if (Math.floor(t * 4) !== Math.floor((t - Math.max(dt, 0.01)) * 4)) {
+            var sec = getVisibleSection();
+            if (sec !== trackedSection) {
+                startTransition(sec);
+                trackedSection = sec;
+            }
         }
 
-        // Smooth mouse
-        var lerpSpeed = mouse.isMoving ? 2.5 : 1;
-        mouse.x += (mouse.tx - mouse.x) * lerpSpeed * dt;
-        mouse.y += (mouse.ty - mouse.y) * lerpSpeed * dt;
+        // Smooth mouse follow
+        var lerpSpd = 2.5;
+        mouse.x += (mouse.tx - mouse.x) * lerpSpd * dt;
+        mouse.y += (mouse.ty - mouse.y) * lerpSpd * dt;
 
-        // ---- Transition animation ----
-        if (transState.phase === 'comet') {
-            var elapsed = t - transState.startTime;
-            // Move comet
-            var ud = cometGroup.userData;
-            var cometProgress = Math.min(elapsed / ud.duration, 1);
-            var cp = 1 - Math.pow(1 - cometProgress, 3); // ease-out
-            cometGroup.position.copy(ud.startPos).lerp(
-                ud.direction.clone().multiplyScalar(25), cp
+        // ---- Handle Streak ----
+        if (transition.phase === 'streak') {
+            var sElapsed = t - transition.startTime;
+            var sProgress = Math.min(sElapsed / streakState.duration, 1);
+            var sEased = 1 - Math.pow(1 - sProgress, 3);
+
+            streakGroup.position.copy(streakState.startPos).lerp(
+                streakState.dir.clone().multiplyScalar(20), sEased
             );
+            updateStreakTrail(streakGroup.position, streakState.dir);
+            streakHead.position.copy(streakGroup.position);
+            streakHead.material.opacity = 1 - sProgress;
 
-            // Update trail
-            var headPos = cometGroup.position.clone();
-            for (var ci = 0; ci < cometTrailCount; ci++) {
-                var trailT = ci / cometTrailCount;
-                cometPositionsArr[ci * 3] = headPos.x - ud.direction.x * trailT * 8;
-                cometPositionsArr[ci * 3 + 1] = headPos.y - ud.direction.y * trailT * 8;
-                cometPositionsArr[ci * 3 + 2] = headPos.z - ud.direction.z * trailT * 8;
-            }
-            cometGeom.attributes.position.needsUpdate = true;
-            headMesh.position.copy(headPos);
-            headMesh.material.opacity = 1 - cometProgress;
-
-            if (cometProgress >= 1) {
-                cometGroup.visible = false;
-                transState.phase = 'flying-in';
-                transState.startTime = t;
-                activeObject = transState.toObj;
-                burstActive = true;
-                burstStart = t;
+            if (sProgress >= 1) {
+                streakGroup.visible = false;
+                streakState.active = false;
+                transition.phase = 'scale-in';
+                transition.startTime = t;
+                activeObjName = transition.targetName;
             }
         }
 
-        if (transState.phase === 'flying-in' && transState.toObj) {
-            var flyElapsed = t - transState.startTime;
-            var flyDuration = 1.3;
-            var flyProgress = Math.min(flyElapsed / flyDuration, 1);
-            var eased = elasticOut(flyProgress);
-            transState.toObj.scale.setScalar(eased);
-            var ud = transState.toObj.userData;
-            if (ud && ud.targetPos) {
-                var startZ = ud.targetPos.z - 20;
-                transState.toObj.position.z = startZ + (ud.targetPos.z - startZ) * eased;
-            }
-            if (flyProgress >= 1) {
-                transState.phase = 'done';
-                burstActive = false;
+        // ---- Scale In (elastic) ----
+        if (transition.phase === 'scale-in' && transition.targetName) {
+            var siElapsed = t - transition.startTime;
+            var siDuration = 1.3;
+            var siProgress = Math.min(siElapsed / siDuration, 1);
+            var siEased = elasticOut(siProgress);
+
+            // Scale up the new object
+            var obj = projectObjects[transition.targetName];
+            if (obj) obj.scale.setScalar(siEased);
+
+            if (siProgress >= 1) {
+                transition.phase = 'done';
             }
         }
 
-        if (transState.phase === 'flying-out' && transState.fromObj) {
-            var outElapsed = t - transState.startTime;
-            var outDuration = 0.6;
-            var outProgress = Math.min(outElapsed / outDuration, 1);
-            var outEased = outProgress * outProgress; // ease-in (accelerate away)
-            transState.fromObj.scale.setScalar(1 - outEased);
-            if (outProgress >= 1) {
-                transState.fromObj.scale.set(0.01, 0.01, 0.01);
-                transState.phase = 'idle';
-                transState.fromObj = null;
+        // ---- Scale Out previous ----
+        if (transition.prevName && transition.phase !== 'done' && transition.prevName !== transition.targetName) {
+            var prevObj = projectObjects[transition.prevName];
+            if (prevObj) {
+                var outProgress = Math.min(1, (t - transition.startTime) / 0.5);
+                prevObj.scale.setScalar(Math.max(0.01, 1 - outProgress));
+                if (outProgress >= 1 && transition.phase !== 'scale-out') {
+                    transition.prevName = null;
+                }
             }
         }
 
-        // ---- Burst flash ----
-        var burstIntensity = 0;
-        if (burstActive) {
-            var burstElapsed = t - burstStart;
-            if (burstElapsed < 0.5) {
-                burstIntensity = Math.max(0, 1 - burstElapsed / 0.5) * 2.5;
-            } else {
-                burstActive = false;
+        // ---- Scale Out (hero transition) ----
+        if (transition.phase === 'scale-out') {
+            var soElapsed = t - transition.startTime;
+            var soProgress = Math.min(soElapsed / 0.5, 1);
+            if (transition.prevName && projectObjects[transition.prevName]) {
+                projectObjects[transition.prevName].scale.setScalar(Math.max(0.01, 1 - soProgress));
+            }
+            if (soProgress >= 1) {
+                if (transition.prevName && projectObjects[transition.prevName]) {
+                    projectObjects[transition.prevName].scale.set(0.01, 0.01, 0.01);
+                }
+                transition.phase = 'idle';
+                transition.prevName = null;
             }
         }
 
-        // ---- Ring rotation ----
+        // ---- Rotate central rings ----
         ring1.rotation.z += 0.12 * dt;
         ring2.rotation.z += 0.18 * dt;
         ring3.rotation.z += 0.08 * dt;
+        ringGroup.rotation.y += mouse.x * 0.18 * dt + 0.05 * dt;
+        ringGroup.rotation.x += mouse.y * 0.12 * dt;
 
-        ringGroup.rotation.y += mouse.x * 0.2 * dt;
-        ringGroup.rotation.x += mouse.y * 0.15 * dt;
-        ringGroup.rotation.y += 0.06 * dt;
+        // Ring color drift toward section accent
+        var currentAccent = accentColors[trackedSection.replace('proj-', '')] || 0xc8a951;
+        var targetColor = new THREE.Color(currentAccent);
+        ring1.material.color.lerp(targetColor, 0.5 * dt);
+        ring2.material.color.copy(targetColor).multiplyScalar(1.06);
+        ring3.material.color.copy(targetColor).multiplyScalar(0.94);
 
-        // Ring color shift toward section accent
-        var sectionColor = sectionColors[lastSectionCheck] || 0xc8a951;
-        var targetCol = new THREE.Color(sectionColor);
-        var curCol1 = new THREE.Color(ring1.material.color.getHex());
-        curCol1.lerp(targetCol, 0.4 * dt);
-        ring1.material.color.set(curCol1);
-        ring2.material.color.set(new THREE.Color(sectionColor).multiplyScalar(1.08));
-        ring3.material.color.set(new THREE.Color(sectionColor).multiplyScalar(0.92));
+        // Core pulse
+        var pulse = 1 + Math.sin(t * 1.4) * 0.35;
+        coreSphere.scale.setScalar(pulse);
+        coreSphere.material.emissiveIntensity = 1.3 + Math.sin(t * 1.4) * 0.7;
+        coreSphere.material.emissive.copy(targetColor);
+        coreSphere.material.color.copy(targetColor);
+        glowShell.material.color.copy(targetColor);
 
-        // Center sphere
-        var pulse = 1 + Math.sin(t * 1.5) * 0.3;
-        centerSphere.scale.setScalar(pulse);
-        centerSphere.material.emissiveIntensity = 1.2 + Math.sin(t * 1.5) * 0.6 + burstIntensity * 0.5;
-
-        // ---- Particle animation ----
-        allLayers.forEach(function(layer, li) {
+        // ---- Animate starfield ----
+        starLayers.forEach(function(layer) {
             var pos = layer.mesh.geometry.attributes.position.array;
             var orig = layer.origins;
-            var speed = [0.35, 0.45, 0.55][li];
-            var amp = [0.4, 0.3, 0.25][li] * (1 + burstIntensity * 0.6);
             for (var i = 0; i < pos.length / 3; i++) {
                 var ox = orig[i * 3], oy = orig[i * 3 + 1], oz = orig[i * 3 + 2];
-                pos[i * 3] = ox + Math.sin(t * speed + oy * 0.4) * amp;
-                pos[i * 3 + 1] = oy + Math.cos(t * speed * 0.8 + ox * 0.35) * amp * 0.7;
-                pos[i * 3 + 2] = oz + Math.sin(t * speed * 0.6 + ox * 0.3) * amp * 0.6;
+                pos[i * 3] = ox + Math.sin(t * layer.speed + oy * 0.5) * layer.amp;
+                pos[i * 3 + 1] = oy + Math.cos(t * layer.speed * 0.7 + ox * 0.4) * layer.amp * 0.6;
+                pos[i * 3 + 2] = oz + Math.sin(t * layer.speed * 0.5 + ox * 0.35) * layer.amp * 0.5;
             }
             layer.mesh.geometry.attributes.position.needsUpdate = true;
-            // Burst: briefly increase particle size
-            layer.mesh.material.size = (
-                [0.06, 0.04, 0.03][li] +
-                Math.random() * ([0.14, 0.10, 0.07][li] - [0.06, 0.04, 0.03][li])
-            ) * (1 + burstIntensity * 1.5);
         });
+        starGroup.rotation.y += 0.02 * dt;
+        starGroup.rotation.x += 0.008 * dt;
+        starGroup.rotation.y += mouse.x * 0.05 * dt;
+        starGroup.rotation.x += mouse.y * 0.03 * dt;
 
-        if (burstActive) {
-            particleGroup.children.forEach(function(p) {
-                if (p.material && p.material.opacity !== undefined) {
-                    p.material.opacity = Math.min(1, p.material.opacity + burstIntensity * 0.3);
+        // ---- Animate active project object ----
+        if (activeObjName && projectObjects[activeObjName]) {
+            var aObj = projectObjects[activeObjName];
+            if (aObj.scale.x > 0.05) {
+                var rs = aObj.userData.rotSpeed || 0.2;
+                aObj.rotation.y += rs * dt;
+                aObj.rotation.x += rs * 0.3 * dt;
+                aObj.rotation.y += mouse.x * 0.25 * dt;
+                aObj.rotation.x += mouse.y * 0.15 * dt;
+
+                // Platform: animate orbiting dots
+                if (activeObjName === 'platform' && aObj.userData.orbitGroup) {
+                    aObj.userData.orbitGroup.children.forEach(function(dot) {
+                        var ud = dot.userData;
+                        ud.orbitPhase += ud.orbitSpeed * dt;
+                        dot.position.x = Math.cos(ud.orbitPhase) * ud.orbitR;
+                        dot.position.y = Math.sin(ud.orbitPhase) * ud.orbitR * Math.cos(ud.orbitPlane);
+                        dot.position.z = Math.sin(ud.orbitPhase) * ud.orbitR * Math.sin(ud.orbitPlane);
+                    });
                 }
-            });
+
+                // Agent: subtle node pulse
+                if (activeObjName === 'agent') {
+                    aObj.children.forEach(function(child) {
+                        if (child.isMesh && child.userData.basePos) {
+                            var bp = child.userData.basePos;
+                            var p = child.userData.phase;
+                            var s = 0.85 + Math.sin(t * 2 + p) * 0.15;
+                            child.scale.setScalar(s);
+                        }
+                    });
+                }
+            }
         }
 
-        // Particle group rotation
-        particleGroup.rotation.y += 0.03 * dt;
-        particleGroup.rotation.x += 0.015 * dt;
-        particleGroup.rotation.y += mouse.x * 0.08 * dt;
-        particleGroup.rotation.x += mouse.y * 0.05 * dt;
-
-        // Project object rotation
-        if (activeObject && activeObject.scale.x > 0.1) {
-            activeObject.rotation.y += 0.3 * dt;
-            activeObject.rotation.x += 0.1 * dt;
-            activeObject.rotation.y += mouse.x * 0.3 * dt;
-            activeObject.rotation.x += mouse.y * 0.2 * dt;
-        }
-
-        // Camera sway
-        var scrollFactor = window.scrollY / Math.max(document.body.scrollHeight - H, 1);
-        camera.position.x += (mouse.x * 0.7 + scrollFactor * 0.5 - camera.position.x) * 0.8 * dt;
-        camera.position.y += (1.2 - mouse.y * 0.5 - camera.position.y) * 0.8 * dt;
-        camera.lookAt(0, 0.8, 0);
+        // ---- Camera sway ----
+        camera.position.x += (mouse.x * 0.5 - camera.position.x) * 0.7 * dt;
+        camera.position.y += (1.0 - mouse.y * 0.35 - camera.position.y) * 0.7 * dt;
+        camera.lookAt(0, 0.5, 0);
 
         renderer.render(scene, camera);
     }
@@ -627,35 +697,35 @@
     });
 
     // ============================================
-    //  SCROLL INTERACTIONS
+    //  SCROLL HINT
     // ============================================
     var scrollHint = document.getElementById('scrollHint');
     if (scrollHint) {
         scrollHint.addEventListener('click', function() {
-            var firstProject = document.querySelector('.project');
+            var firstProject = document.querySelector('.project-section');
             if (firstProject) firstProject.scrollIntoView({ behavior: 'smooth' });
         });
-        var hintHidden = false;
+        var hintGone = false;
         window.addEventListener('scroll', function() {
-            if (!hintHidden && window.scrollY > 100) {
-                hintHidden = true;
+            if (!hintGone && window.scrollY > 120) {
+                hintGone = true;
                 scrollHint.style.opacity = '0';
-                setTimeout(function() { scrollHint.style.display = 'none'; }, 300);
+                setTimeout(function() { scrollHint.style.display = 'none'; }, 350);
             }
         }, { passive: true });
     }
 
     // ============================================
-    //  NUMBER COUNTERS
+    //  NUMBER COUNTERS + REVEAL
     // ============================================
     function animateNumber(el) {
         var target = parseInt(el.getAttribute('data-count'), 10);
         if (isNaN(target)) return;
-        var current = 0, duration = 1200, start = performance.now();
+        var current = 0, duration = 1300, start = performance.now();
         function tick(now) {
             var elapsed = now - start;
             var progress = Math.min(elapsed / duration, 1);
-            progress = 1 - Math.pow(1 - progress, 3);
+            progress = 1 - Math.pow(1 - progress, 3); // ease-out cubic
             current = Math.round(target * progress);
             el.textContent = current;
             if (progress < 1) requestAnimationFrame(tick);
@@ -664,30 +734,32 @@
         requestAnimationFrame(tick);
     }
 
-    var revealObserver = new IntersectionObserver(function(entries) {
+    var revealObs = new IntersectionObserver(function(entries) {
         entries.forEach(function(entry) {
             if (entry.isIntersecting) {
                 var el = entry.target;
                 if (el.classList.contains('reveal')) el.classList.add('visible');
                 if (el.classList.contains('reveal-children')) el.classList.add('visible');
-                el.querySelectorAll('.big-num[data-count], .met-num[data-count]').forEach(function(num) {
+                el.querySelectorAll('[data-count]').forEach(function(num) {
                     if (!num.dataset.animated) { num.dataset.animated = '1'; animateNumber(num); }
                 });
-                revealObserver.unobserve(el);
+                revealObs.unobserve(el);
             }
         });
-    }, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
     document.querySelectorAll('.reveal, .reveal-children').forEach(function(el) {
-        revealObserver.observe(el);
+        revealObs.observe(el);
     });
 
-    // Device orientation for mobile
+    // ============================================
+    //  DEVICE ORIENTATION (mobile)
+    // ============================================
     if (isMobile && window.DeviceOrientationEvent) {
         window.addEventListener('deviceorientation', function(e) {
-            if (e.beta && e.gamma) {
-                mouse.tx = Math.max(-1, Math.min(1, e.gamma / 45));
-                mouse.ty = Math.max(-1, Math.min(1, (e.beta - 45) / 45));
+            if (e.beta != null && e.gamma != null) {
+                mouse.tx = Math.max(-1, Math.min(1, e.gamma / 40));
+                mouse.ty = Math.max(-1, Math.min(1, (e.beta - 45) / 40));
             }
         });
     }

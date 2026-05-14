@@ -1,23 +1,25 @@
 /* ============================================================
-   Dark Observatory — WenXiang Sun Portfolio
-   Large type · Distinct project sections · Interactive
+   Constellation — WenXiang Sun Portfolio
+   Deep space · Celestial 3D · Large type
    ============================================================ */
 
 :root {
-    --ink: #080810;
+    --ink: #060610;
     --ivory: #f3efe8;
     --ivory-dim: rgba(243, 239, 232, 0.5);
-    --ivory-faint: rgba(243, 239, 232, 0.08);
+    --ivory-faint: rgba(243, 239, 232, 0.06);
     --gold: #c8a951;
+    --gold-bright: #e0c865;
     --gold-dim: rgba(200, 169, 81, 0.5);
-    --gold-faint: rgba(200, 169, 81, 0.1);
     --indigo: #7b8cc8;
-    --indigo-dim: rgba(123, 140, 200, 0.4);
+    --indigo-bright: #91a0d8;
+    --indigo-dim: rgba(123, 140, 200, 0.5);
     --teal: #5ea8a0;
-    --teal-dim: rgba(94, 168, 160, 0.4);
+    --teal-bright: #72c0b8;
+    --teal-dim: rgba(94, 168, 160, 0.5);
     --amber: #c89551;
-    --amber-dim: rgba(200, 149, 81, 0.4);
-    --bg-glow: radial-gradient(ellipse 80% 60% at 50% 30%, #0d0d1c 0%, #080810 50%, #04040c 100%);
+    --amber-bright: #e0a865;
+    --amber-dim: rgba(200, 149, 81, 0.5);
     --font-display: 'Bodoni Moda', 'Georgia', 'Times New Roman', serif;
     --font-mono: 'DM Mono', 'Courier New', monospace;
     --font-body: 'DM Sans', -apple-system, sans-serif;
@@ -36,17 +38,17 @@ html {
 
 body {
     font-family: var(--font-body);
-    background: var(--bg-glow);
+    background: radial-gradient(ellipse 80% 60% at 50% 30%, #0d0d1c 0%, #060610 50%, #03030a 100%);
     color: var(--ivory);
     overflow-x: hidden;
     cursor: crosshair;
-    transition: background 1.2s ease;
+    transition: background 1.5s var(--ease);
 }
 
-body[data-section="defense"]  { background: radial-gradient(ellipse 80% 60% at 50% 30%, #141008 0%, #080810 50%, #04040c 100%); }
-body[data-section="platform"] { background: radial-gradient(ellipse 80% 60% at 50% 30%, #0d0d1c 0%, #080810 50%, #04040c 100%); }
-body[data-section="digital"]  { background: radial-gradient(ellipse 80% 60% at 50% 30%, #081412 0%, #080810 50%, #04040c 100%); }
-body[data-section="agent"]    { background: radial-gradient(ellipse 80% 60% at 50% 30%, #140e08 0%, #080810 50%, #04040c 100%); }
+body[data-section="defense"]  { background: radial-gradient(ellipse 80% 60% at 50% 30%, #141008 0%, #060610 50%, #03030a 100%); }
+body[data-section="platform"] { background: radial-gradient(ellipse 80% 60% at 50% 30%, #0c0d1c 0%, #060610 50%, #03030a 100%); }
+body[data-section="digital"]  { background: radial-gradient(ellipse 80% 60% at 50% 30%, #081412 0%, #060610 50%, #03030a 100%); }
+body[data-section="agent"]    { background: radial-gradient(ellipse 80% 60% at 50% 30%, #140e08 0%, #060610 50%, #03030a 100%); }
 
 /* ---- 3D Canvas ---- */
 #bg-canvas {
@@ -60,19 +62,18 @@ body[data-section="agent"]    { background: radial-gradient(ellipse 80% 60% at 5
    ============================================================ */
 .reveal {
     opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+    transform: translateY(36px);
+    transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
 }
 .reveal.visible {
     opacity: 1;
     transform: translateY(0);
 }
 
-/* ---- Stagger children inside a parent .reveal-children ---- */
 .reveal-children > * {
     opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+    transform: translateY(28px);
+    transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
 }
 .reveal-children.visible > *:nth-child(1) { transition-delay: 0s; }
 .reveal-children.visible > *:nth-child(2) { transition-delay: 0.1s; }
@@ -99,12 +100,12 @@ body[data-section="agent"]    { background: radial-gradient(ellipse 80% 60% at 5
 }
 
 .hero-content {
-    animation: heroIn 1.4s var(--ease) both;
+    animation: heroEntrance 1.5s var(--ease) both;
 }
 
-@keyframes heroIn {
-    from { opacity: 0; transform: translateY(30px); letter-spacing: 0.04em; }
-    to   { opacity: 1; transform: translateY(0); letter-spacing: normal; }
+@keyframes heroEntrance {
+    from { opacity: 0; transform: translateY(36px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 .hero-name {
@@ -129,7 +130,7 @@ body[data-section="agent"]    { background: radial-gradient(ellipse 80% 60% at 5
     display: flex; align-items: center; justify-content: center;
     gap: 0.6rem; flex-wrap: wrap;
     font-family: var(--font-mono);
-    font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+    font-size: clamp(0.72rem, 1.4vw, 0.88rem);
     font-weight: 400; letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--ivory-dim);
@@ -154,18 +155,19 @@ body[data-section="agent"]    { background: radial-gradient(ellipse 80% 60% at 5
     cursor: pointer;
     animation: fadeUp 1s var(--ease) 1.5s both;
     transition: opacity 0.3s;
+    z-index: 2;
 }
 
 .scroll-word {
     font-family: var(--font-mono);
-    font-size: 0.65rem; letter-spacing: 0.2em;
+    font-size: 0.62rem; letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--ivory-dim);
 }
 
 .scroll-line {
-    width: 1px; height: 40px;
-    background: rgba(243,239,232,0.1);
+    width: 1px; height: 44px;
+    background: rgba(243,239,232,0.08);
     position: relative; overflow: hidden;
 }
 
@@ -173,11 +175,10 @@ body[data-section="agent"]    { background: radial-gradient(ellipse 80% 60% at 5
     position: absolute; top: 0; left: 0;
     width: 100%; height: 100%;
     background: var(--gold);
-    animation: scrollPulse 2s ease-in-out infinite;
-    transform-origin: top;
+    animation: linePulse 2s ease-in-out infinite;
 }
 
-@keyframes scrollPulse {
+@keyframes linePulse {
     0% { transform: scaleY(0); transform-origin: top; }
     30% { transform: scaleY(1); transform-origin: top; }
     60% { transform: scaleY(1); transform-origin: bottom; }
@@ -190,66 +191,80 @@ body[data-section="agent"]    { background: radial-gradient(ellipse 80% 60% at 5
 }
 
 /* ============================================================
-   PROJECT SECTIONS — COMMON
+   PROJECT SECTIONS — SHARED
    ============================================================ */
-.project {
+.project-section {
     position: relative; z-index: 1;
-    padding: clamp(4rem, 10vh, 8rem) 1.5rem;
+    padding: clamp(5rem, 12vh, 9rem) 1.5rem;
     border-top: 1px solid var(--ivory-faint);
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
 }
 
-.proj-container {
+.section-inner {
     max-width: 960px; margin: 0 auto;
+    width: 100%;
 }
 
-.proj-meta { margin-bottom: clamp(0.75rem, 2vh, 1rem); }
-
-.proj-tag {
+.sec-label {
     font-family: var(--font-mono);
-    font-size: 0.72rem; font-weight: 500;
+    font-size: 0.7rem; font-weight: 500;
     letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--gold-dim);
+    margin-bottom: clamp(1rem, 2vh, 1.5rem);
 }
 
-.proj-title {
+[data-accent="gold"]   .sec-label { color: var(--gold-dim); }
+[data-accent="indigo"] .sec-label { color: var(--indigo-dim); }
+[data-accent="teal"]   .sec-label { color: var(--teal-dim); }
+[data-accent="amber"]  .sec-label { color: var(--amber-dim); }
+
+.sec-title {
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: clamp(2.2rem, 5vw, 4rem);
-    line-height: 0.95;
+    font-size: clamp(2.4rem, 5.5vw, 4.5rem);
+    line-height: 0.92;
     color: var(--ivory);
-    margin-bottom: clamp(1.5rem, 3vh, 2.5rem);
+    margin-bottom: clamp(1.25rem, 2.5vh, 2rem);
 }
 
-.proj-body { max-width: 720px; }
-
-.proj-body p {
+.sec-desc {
     font-size: clamp(1rem, 1.5vw, 1.15rem);
-    font-weight: 300; line-height: 1.65;
+    font-weight: 300; line-height: 1.7;
     color: var(--ivory-dim);
+    max-width: 540px;
     margin-bottom: 1rem;
 }
 
-/* ---- Big Numbers ---- */
-.big-num {
+.giant-stat {
+    display: flex; align-items: baseline; gap: 0.08em;
+}
+
+.giant-num {
     font-family: var(--font-display);
-    font-size: clamp(4rem, 9vw, 7rem);
+    font-size: clamp(4.5rem, 10vw, 8rem);
     font-weight: 900;
     line-height: 1;
-    color: var(--ivory);
 }
 
-.big-num-suffix {
+.giant-unit {
     font-family: var(--font-display);
-    font-size: clamp(2rem, 4vw, 3rem);
+    font-size: clamp(2rem, 4vw, 3.5rem);
     font-weight: 700;
     color: var(--ivory-dim);
-    margin-left: 0.1em;
 }
 
-.stat-label {
+.block-unit { display: block; }
+
+[data-accent="gold"]   .giant-num { color: var(--gold); }
+[data-accent="indigo"] .giant-num { color: var(--indigo); }
+[data-accent="teal"]   .giant-num { color: var(--teal); }
+[data-accent="amber"]  .giant-num { color: var(--amber); }
+
+.stat-sub {
     display: block;
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--ivory-dim);
@@ -259,26 +274,22 @@ body[data-section="agent"]    { background: radial-gradient(ellipse 80% 60% at 5
 /* ============================================================
    PROJECT 1 — Smart Contract Defense
    ============================================================ */
-[data-accent="gold"] .proj-tag { color: var(--gold-dim); }
-[data-accent="gold"] .big-num { color: var(--gold); }
-
-.defense-layout {
+.defense-grid {
     display: grid;
     grid-template-columns: auto 1fr;
     gap: clamp(2rem, 6vw, 5rem);
     align-items: start;
-    max-width: 100%;
 }
 
-.defense-stat {
+.defense-stat-col {
     display: flex; flex-direction: column;
 }
 
-.defense-text p {
+.defense-info {
     max-width: 480px;
 }
 
-.defense-metrics {
+.metric-row {
     display: flex; gap: clamp(1rem, 3vw, 2rem);
     flex-wrap: wrap;
     margin-top: 1.5rem;
@@ -286,43 +297,41 @@ body[data-section="agent"]    { background: radial-gradient(ellipse 80% 60% at 5
     border-top: 1px solid var(--ivory-faint);
 }
 
-.defense-metrics > div {
-    display: flex; align-items: baseline; gap: 0.15rem;
+.metric {
+    display: flex; align-items: baseline; gap: 0.12rem;
     flex-wrap: wrap;
 }
 
-.defense-metrics .met-num {
+.metric-num {
     font-family: var(--font-display);
     font-size: clamp(1.6rem, 3vw, 2.4rem);
     font-weight: 700;
-    color: var(--gold);
     line-height: 1;
 }
 
-.defense-metrics span:not(.met-num) {
+.metric-unit {
     font-family: var(--font-display);
     font-size: clamp(1rem, 2vw, 1.3rem);
     font-weight: 600;
     color: var(--ivory);
 }
 
-.defense-metrics small {
+.metric small {
     display: block; width: 100%;
     font-family: var(--font-mono);
-    font-size: 0.6rem; font-weight: 400;
+    font-size: 0.58rem; font-weight: 400;
     letter-spacing: 0.06em; text-transform: uppercase;
     color: var(--ivory-dim);
     margin-top: 0.15rem;
 }
 
+[data-accent="gold"] .metric-num { color: var(--gold); }
+
 /* ============================================================
    PROJECT 2 — Global Knowledge Platform
    ============================================================ */
-[data-accent="indigo"] .proj-tag { color: var(--indigo-dim); }
-[data-accent="indigo"] .big-num { color: var(--indigo); }
-
-.platform-stats {
-    display: flex; gap: clamp(1rem, 5vw, 4rem);
+.platform-stats-row {
+    display: flex; gap: clamp(1.5rem, 5vw, 4rem);
     flex-wrap: wrap;
     margin-bottom: clamp(2rem, 4vh, 3rem);
 }
@@ -331,15 +340,11 @@ body[data-section="agent"]    { background: radial-gradient(ellipse 80% 60% at 5
     display: flex; flex-direction: column;
 }
 
-.platform-body p {
-    max-width: 600px;
-}
-
-.platform-meta-row {
+.tag-row {
     display: flex; align-items: center; gap: 0.5rem;
     flex-wrap: wrap;
     font-family: var(--font-mono);
-    font-size: 0.72rem; letter-spacing: 0.05em;
+    font-size: 0.7rem; letter-spacing: 0.05em;
     color: var(--indigo-dim);
     margin-top: 0.75rem;
 }
@@ -347,10 +352,7 @@ body[data-section="agent"]    { background: radial-gradient(ellipse 80% 60% at 5
 /* ============================================================
    PROJECT 3 — Digital Human System
    ============================================================ */
-[data-accent="teal"] .proj-tag { color: var(--teal-dim); }
-[data-accent="teal"] .big-num { color: var(--teal); }
-
-.digital-layout {
+.digital-grid {
     display: grid;
     grid-template-columns: 1fr auto;
     gap: clamp(2rem, 5vw, 4rem);
@@ -359,12 +361,12 @@ body[data-section="agent"]    { background: radial-gradient(ellipse 80% 60% at 5
 
 .digital-text { max-width: 540px; }
 
-.digital-stat {
+.digital-stat-ring {
     display: flex; flex-direction: column; align-items: center;
     text-align: center;
 }
 
-.latency-ring {
+.latency-circle {
     width: clamp(140px, 22vw, 200px);
     height: clamp(140px, 22vw, 200px);
     border-radius: 50%;
@@ -372,50 +374,41 @@ body[data-section="agent"]    { background: radial-gradient(ellipse 80% 60% at 5
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     margin-bottom: 0.75rem;
-    transition: border-color 0.5s, box-shadow 0.5s;
+    transition: border-color 0.6s, box-shadow 0.6s;
 }
 
-.latency-ring:hover {
-    border-color: rgba(94,168,160,0.6);
-    box-shadow: 0 0 60px rgba(94,168,160,0.1);
+.latency-circle:hover {
+    border-color: rgba(94,168,160,0.55);
+    box-shadow: 0 0 60px rgba(94,168,160,0.12);
 }
 
-.latency-ring .big-num {
+.latency-circle .giant-num {
     font-size: clamp(3rem, 7vw, 5rem);
 }
 
-.latency-ring .big-num-suffix {
+.latency-circle .giant-unit {
     font-size: clamp(1.2rem, 2vw, 1.6rem);
-    display: block;
 }
 
 /* ============================================================
-   PROJECT 4 — Agent Behavior
+   PROJECT 4 — Agent Behavior Identification
    ============================================================ */
-[data-accent="amber"] .proj-tag { color: var(--amber-dim); }
-[data-accent="amber"] .big-num { color: var(--amber); }
-
-.agent-layout {
-    text-align: center;
+.agent-centered {
     display: flex; flex-direction: column; align-items: center;
+    text-align: center;
 }
 
-.agent-stat-center {
+.center-stat {
     margin-bottom: clamp(1.5rem, 3vh, 2rem);
 }
 
-.agent-layout .proj-title {
-    margin-bottom: clamp(1rem, 2vh, 1.5rem);
-}
-
-.agent-layout p {
+.center-desc {
     max-width: 540px;
     margin-left: auto; margin-right: auto;
-    font-size: clamp(1rem, 1.5vw, 1.15rem);
 }
 
 /* ============================================================
-   ABOUT SECTION
+   ABOUT
    ============================================================ */
 .about-section {
     position: relative; z-index: 1;
@@ -431,26 +424,26 @@ body[data-section="agent"]    { background: radial-gradient(ellipse 80% 60% at 5
     margin-bottom: clamp(2.5rem, 6vh, 4rem);
 }
 
-.about-item {
+.about-card {
     text-align: center;
 }
 
 .about-icon {
     display: block;
-    font-size: 0.5rem; color: var(--gold-dim);
+    font-size: 0.45rem; color: var(--gold-dim);
     margin-bottom: 0.75rem;
 }
 
 .about-label {
     display: block;
     font-family: var(--font-mono);
-    font-size: 0.65rem; font-weight: 500;
+    font-size: 0.62rem; font-weight: 500;
     letter-spacing: 0.15em; text-transform: uppercase;
     color: var(--gold-dim);
     margin-bottom: 0.5rem;
 }
 
-.about-value {
+.about-text {
     display: block;
     font-family: var(--font-body);
     font-size: 0.9rem; font-weight: 300;
@@ -471,7 +464,7 @@ body[data-section="agent"]    { background: radial-gradient(ellipse 80% 60% at 5
 .contact-link {
     display: inline-flex; align-items: center; gap: 0.35rem;
     font-family: var(--font-mono);
-    font-size: 0.72rem; font-weight: 400;
+    font-size: 0.7rem; font-weight: 400;
     letter-spacing: 0.04em;
     color: var(--ivory-dim);
     text-decoration: none;
@@ -481,7 +474,7 @@ body[data-section="agent"]    { background: radial-gradient(ellipse 80% 60% at 5
 a.contact-link:hover { color: var(--gold); }
 
 .contact-link i {
-    font-size: 0.75rem; color: var(--gold-dim);
+    font-size: 0.72rem; color: var(--gold-dim);
     transition: color 0.35s;
 }
 
@@ -489,18 +482,11 @@ a.contact-link:hover i { color: var(--gold); }
 
 .contact-loc {
     font-family: var(--font-mono);
-    font-size: 0.65rem; letter-spacing: 0.2em;
+    font-size: 0.62rem; letter-spacing: 0.2em;
     color: var(--ivory-dim);
-    opacity: 0.45;
+    opacity: 0.4;
     margin-left: 0.5rem;
 }
-
-/* ---- Custom scrollbar ---- */
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--ivory-faint); border-radius: 2px; }
-
-::selection { background: rgba(200,169,81,0.25); color: var(--ivory); }
 
 /* ============================================================
    RESPONSIVE
@@ -508,40 +494,48 @@ a.contact-link:hover i { color: var(--gold); }
 @media (max-width: 768px) {
     body { cursor: auto; }
 
-    .hero-name { font-size: clamp(2.8rem, 13vw, 4.5rem); }
-    .hero-roles { font-size: 0.7rem; gap: 0.4rem; }
+    .hero-name { font-size: clamp(2.6rem, 12vw, 4rem); }
+    .hero-roles { font-size: 0.66rem; gap: 0.4rem; }
     .hero-desc { font-size: 0.9rem; }
 
-    .defense-layout {
+    .project-section {
+        min-height: auto;
+        padding: clamp(3rem, 8vh, 5rem) 1.25rem;
+    }
+
+    .sec-title { font-size: clamp(2rem, 7vw, 3rem); }
+
+    .defense-grid {
         grid-template-columns: 1fr;
         gap: 1.5rem;
     }
 
-    .digital-layout {
+    .digital-grid {
         grid-template-columns: 1fr;
         gap: 2rem;
     }
+    .digital-stat-ring { order: -1; }
 
-    .digital-stat { order: -1; }
-    .latency-ring {
+    .latency-circle {
         width: 130px; height: 130px;
     }
 
-    .platform-stats {
-        gap: 2rem;
-    }
-
-    .about-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
-
-    .defense-metrics { gap: 1rem; }
+    .platform-stats-row { gap: 2rem; }
+    .metric-row { gap: 1rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    .giant-num { font-size: clamp(3.5rem, 14vw, 5rem); }
 }
 
 @media (max-width: 400px) {
     .hero-name { font-size: 2.2rem; }
-    .proj-title { font-size: 1.8rem; }
-    .big-num { font-size: 3rem; }
-    .platform-stats { gap: 1.25rem; }
+    .sec-title { font-size: 1.8rem; }
+    .giant-num { font-size: 2.8rem; }
+    .platform-stats-row { gap: 1.25rem; }
 }
+
+/* ---- Scrollbar ---- */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--ivory-faint); border-radius: 2px; }
+
+::selection { background: rgba(200,169,81,0.22); color: var(--ivory); }
