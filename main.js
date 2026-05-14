@@ -16,8 +16,8 @@
     var scene = new THREE.Scene();
 
     var camera = new THREE.PerspectiveCamera(48, W / H, 0.3, 80);
-    camera.position.set(0, 1.0, isMobile ? 14 : 12);
-    camera.lookAt(0, 0.5, 0);
+    camera.position.set(0, 0, isMobile ? 14 : 12);
+    camera.lookAt(0, 0, 0);
 
     var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(W, H);
@@ -124,7 +124,7 @@
     // ============================================
     var ringGroup = new THREE.Group();
     scene.add(ringGroup);
-    ringGroup.position.set(0, 0.5, 0);
+    ringGroup.position.set(0, 0, 0);
 
     var ringRadius = isMobile ? 2.6 : 3.5;
     var ringTube = isMobile ? 0.022 : 0.03;
@@ -178,7 +178,7 @@
     //  All at center position, scale 0.01 initially
     // ============================================
     var projectGroup = new THREE.Group();
-    projectGroup.position.set(0, 0.5, 0);
+    projectGroup.position.set(0, 0, 0);
     scene.add(projectGroup);
 
     var projectObjects = {};
@@ -677,8 +677,8 @@
 
         // ---- Camera sway ----
         camera.position.x += (mouse.x * 0.5 - camera.position.x) * 0.7 * dt;
-        camera.position.y += (1.0 - mouse.y * 0.35 - camera.position.y) * 0.7 * dt;
-        camera.lookAt(0, 0.5, 0);
+        camera.position.y += (0 - mouse.y * 0.35 - camera.position.y) * 0.7 * dt;
+        camera.lookAt(0, 0, 0);
 
         renderer.render(scene, camera);
     }
