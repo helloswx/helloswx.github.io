@@ -60,10 +60,9 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 2rem 1.5rem 2.5rem;
+    padding: clamp(3rem, 8vh, 6rem) 1.5rem 3rem;
     gap: clamp(1.5rem, 4vh, 3rem);
+    min-height: 100vh;
 }
 
 /* ---- Hero / Name ---- */
@@ -193,6 +192,100 @@ body {
     letter-spacing: 0.01em;
 }
 
+/* ---- Selected Work ---- */
+.work {
+    width: 100%;
+    max-width: 780px;
+    animation: fadeUp 1s var(--ease-out) 0.9s both;
+}
+
+.section-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: clamp(0.75rem, 2vh, 1.25rem);
+    text-align: center;
+}
+
+.work-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+@media (max-width: 600px) {
+    .work-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.work-card {
+    background: rgba(243, 239, 232, 0.018);
+    border: 1px solid rgba(243, 239, 232, 0.05);
+    padding: clamp(1rem, 2.5vw, 1.35rem) clamp(1rem, 2.5vw, 1.25rem);
+    transition: border-color 0.5s ease, background 0.5s ease;
+}
+
+.work-card:hover {
+    border-color: rgba(200, 169, 81, 0.13);
+    background: rgba(243, 239, 232, 0.028);
+}
+
+.work-card-meta {
+    margin-bottom: 0.4rem;
+}
+
+.work-tag {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+}
+
+.work-title {
+    font-family: var(--font-display);
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    font-weight: 600;
+    color: var(--ivory);
+    margin-bottom: 0.35rem;
+    letter-spacing: 0.01em;
+}
+
+.work-desc {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 300;
+    line-height: 1.55;
+    color: var(--ivory-dim);
+}
+
+/* ---- Background / Education ---- */
+.background {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    color: var(--ivory-dim);
+    opacity: 0.45;
+    animation: fadeUp 1s var(--ease-out) 1.1s both;
+}
+
+.bg-dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--gold-faint);
+}
+
 /* ---- Contact ---- */
 .contact {
     display: flex;
@@ -200,7 +293,7 @@ body {
     justify-content: center;
     gap: clamp(0.5rem, 2vw, 1.5rem);
     flex-wrap: wrap;
-    animation: fadeUp 1s var(--ease-out) 1s both;
+    animation: fadeUp 1s var(--ease-out) 1.2s both;
 }
 
 .contact-item {
@@ -264,9 +357,8 @@ a.contact-item:hover i {
     body { cursor: auto; }
 
     .container {
-        justify-content: flex-start;
         padding-top: clamp(2rem, 8vh, 4rem);
-        gap: clamp(1rem, 3vh, 2rem);
+        gap: clamp(0.8rem, 2.5vh, 1.5rem);
     }
 
     .name {
@@ -280,6 +372,19 @@ a.contact-item:hover i {
 
     .card {
         max-width: 100%;
+    }
+
+    .work {
+        max-width: 100%;
+    }
+
+    .work-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .background {
+        font-size: 0.58rem;
+        gap: 0.4rem;
     }
 
     .contact {
