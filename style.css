@@ -40,7 +40,13 @@ body {
     color: var(--ivory);
     overflow-x: hidden;
     cursor: crosshair;
+    transition: background 1.2s ease;
 }
+
+body[data-section="defense"]  { background: radial-gradient(ellipse 80% 60% at 50% 30%, #141008 0%, #080810 50%, #04040c 100%); }
+body[data-section="platform"] { background: radial-gradient(ellipse 80% 60% at 50% 30%, #0d0d1c 0%, #080810 50%, #04040c 100%); }
+body[data-section="digital"]  { background: radial-gradient(ellipse 80% 60% at 50% 30%, #081412 0%, #080810 50%, #04040c 100%); }
+body[data-section="agent"]    { background: radial-gradient(ellipse 80% 60% at 50% 30%, #140e08 0%, #080810 50%, #04040c 100%); }
 
 /* ---- 3D Canvas ---- */
 #bg-canvas {
